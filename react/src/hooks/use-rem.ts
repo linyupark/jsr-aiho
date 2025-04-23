@@ -106,7 +106,10 @@ export function rem2px(
  * @param options 配置选项
  * @returns 包含转换函数的对象
  */
-export function useRem(options: UseRemOptions = {}) {
+export function useRem(options: UseRemOptions = {}): {
+  px2rem: (px: number) => string
+  rem2px: (rem: number) => number
+} {
   const baseWidth = options.baseWidth ?? DEFAULT_BASE_WIDTH
   const baseSize = options.baseSize ?? DEFAULT_BASE_SIZE
 

@@ -76,7 +76,10 @@ const DEFAULT_MOBILE_BREAKPOINT = 768
  * @param options 配置选项
  * @returns 包含设备信息的对象
  */
-export function useDevice(options: UseDeviceOptions = {}) {
+export function useDevice(options: UseDeviceOptions = {}): {
+  isMobile: boolean
+  deviceType: DeviceType
+} {
   const mobileBreakpoint = options.mobileBreakpoint ?? DEFAULT_MOBILE_BREAKPOINT
 
   const [isMobile, setIsMobile] = useState(false)
