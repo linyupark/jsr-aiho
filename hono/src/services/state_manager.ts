@@ -1,19 +1,23 @@
 /**
  * 通用状态数据接口，允许存储任意类型的数据。
+ * @template T 存储的数据类型
  */
 interface StateData<T = unknown> {
+  /** 存储的数据 */
   data: T
+  /** 创建时间戳（毫秒） */
   createdAt: number
 }
 
-// 使用 Map 存储 state，键是 state 字符串，值是包含数据和创建时间戳的对象
+/** 使用 Map 存储 state，键是 state 字符串，值是包含数据和创建时间戳的对象 */
 const stateStore = new Map<string, StateData>()
 
-// state 有效期（例如：10分钟，以毫秒为单位）
-const STATE_EXPIRATION_MS = 10 * 60 * 1000
+/** state 有效期（例如：10分钟，以毫秒为单位） */
+const STATE_EXPIRATION_MS: number = 10 * 60 * 1000
 
 /**
  * 清理过期的 state
+ * @returns void
  */
 export const clearExpiredStateData = (): void => {
   const now = Date.now()
@@ -27,6 +31,7 @@ export const clearExpiredStateData = (): void => {
 
 /**
  * 创建一个新的 state 并存储关联的数据
+ * @template T 存储的数据类型
  * @param data 要与 state 关联的数据
  * @returns 生成的 state 字符串
  */
@@ -43,6 +48,7 @@ export const createState = <T>(data: T): string => {
 
 /**
  * 获取并校验 state，返回关联的数据
+ * @template T 存储的数据类型
  * @param state 从外部获取的 state 字符串
  * @returns 如果 state 有效且未过期，返回存储的数据；否则返回 null
  */
@@ -67,6 +73,7 @@ export const getStateData = <T>(state: string): T | null => {
 /**
  * 删除一个已使用的 state
  * @param state 要删除的 state 字符串
+ * @returns void
  */
 export const deleteStateData = (state: string): void => {
   if (stateStore.delete(state)) {

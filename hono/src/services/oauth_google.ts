@@ -1,9 +1,13 @@
 import type { Context } from 'hono'
 import { createState, deleteStateData, getStateData } from './state_manager.ts' // 导入 state 管理函数
 
-const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
-const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token'
-const GOOGLE_USERINFO_URL = 'https://www.googleapis.com/oauth2/v2/userinfo'
+/** Google OAuth 授权 URL */
+const GOOGLE_AUTH_URL: string = 'https://accounts.google.com/o/oauth2/v2/auth'
+/** Google OAuth 令牌 URL */
+const GOOGLE_TOKEN_URL: string = 'https://oauth2.googleapis.com/token'
+/** Google 用户信息 API URL */
+const GOOGLE_USERINFO_URL: string =
+  'https://www.googleapis.com/oauth2/v2/userinfo'
 
 /**
  * 获取 Google OAuth 重定向 URL

@@ -1,9 +1,12 @@
-import type { Context } from 'hono'
+import type { Context, GitHubEmail } from '../types/index.ts'
 import { createState, getStateData, deleteStateData } from './state_manager.ts' // 导入 state 管理函数
 
-const GITHUB_AUTH_URL = 'https://github.com/login/oauth/authorize'
-const GITHUB_TOKEN_URL = 'https://github.com/login/oauth/access_token'
-const GITHUB_USER_URL = 'https://api.github.com/user'
+/** GitHub OAuth 授权 URL */
+const GITHUB_AUTH_URL: string = 'https://github.com/login/oauth/authorize'
+/** GitHub OAuth 令牌 URL */
+const GITHUB_TOKEN_URL: string = 'https://github.com/login/oauth/access_token'
+/** GitHub 用户信息 API URL */
+const GITHUB_USER_URL: string = 'https://api.github.com/user'
 
 /**
  * 获取 GitHub OAuth 重定向 URL
@@ -135,7 +138,7 @@ export const handleGithubCallback = async (c: Context): Promise<Response> => {
         })
         if (emailsResponse.ok) {
           const emails = await emailsResponse.json()
-          const primaryEmail = emails.find((e: any) => e.primary)
+          const primaryEmail = emails.find((e: GitHubEmail) => e.primary)
           if (primaryEmail) {
             email = primaryEmail.email
           }
