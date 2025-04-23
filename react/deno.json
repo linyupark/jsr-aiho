@@ -1,0 +1,38 @@
+{
+  "name": "@aiho/react",
+  "version": "0.1.1",
+  "description": "React utility hooks and components for enterprise applications",
+  "exports": {
+    ".": "./mod.ts",
+    "./hooks": "./src/hooks/mod.ts",
+    "./types": "./src/types.ts"
+  },
+  "imports": {
+    "react": "npm:react@^19",
+    "react-dom": "npm:react-dom@^19"
+  },
+  "publish": {
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx",
+      "mod.ts",
+      "README.md",
+      "CHANGELOG.md",
+      "LICENSE"
+    ]
+  },
+  "dependencies": {
+    "react": "^19",
+    "react-dom": "^19"
+  },
+  "keywords": [
+    "react",
+    "hooks",
+    "components",
+    "mobile",
+    "responsive",
+    "rem",
+    "safe-area"
+  ],
+  "license": "MIT"
+}

@@ -1,0 +1,17 @@
+{
+  "version": "4",
+  "specifiers": {
+    "npm:react@19": "19.1.0"
+  },
+  "npm": {
+    "react@19.1.0": {
+      "integrity": "sha512-FS+XFBNvn3GTAWq26joslQgWNoFu08F4kl0J4CgdNKADkdSGXQyTCnKteIAJy96Br6YbpEU1LSzV5dYtjMkMDg=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:react-dom@19",
+      "npm:react@19"
+    ]
+  }
+}
