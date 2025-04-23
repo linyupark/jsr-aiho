@@ -19,7 +19,7 @@
     "hono": "jsr:@hono/hono@^4.7.7",
     "hono/": "jsr:@hono/hono@^4.7.7/",
     "hono/jwt": "jsr:@hono/hono@^4.7.7/jwt",
-    "path": "@std/path"
+    "path": "jsr:@std/path@^1.0.8"
   },
   "publish": {
     "include": ["src/**/*.ts", "mod.ts", "README.md", "CHANGELOG.md", "LICENSE"]
