@@ -25,6 +25,9 @@
     "react": "^19",
     "react-dom": "^19"
   },
+  "compilerOptions": {
+    "lib": ["deno.ns", "dom", "dom.iterable", "esnext"]
+  },
   "keywords": [
     "react",
     "hooks",
