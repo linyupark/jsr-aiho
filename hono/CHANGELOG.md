@@ -8,8 +8,24 @@
 - **📝 文档**：文档更新
 - **🔧 维护**：代码维护和优化
 
+
+<details open>
+<summary><strong>0.1.4</strong></summary>
+
+## 🔥 新功能
+
+### ✨ 文件上传服务
+- `createUploadService` - 创建通用文件上传服务
+- 支持多种文件类型的上传
+- 支持自定义上传目录
+- 支持文件大小和类型验证
+- 与 JWT 中间件兼容
+- 支持自定义文件名生成
+
+</details>
+
 <details>
-<summary><strong>0.1.2</strong> (2023-05-20)</summary>
+<summary><strong>0.1.3</strong></summary>
 
 ## 🎉 首次发布
 
@@ -29,51 +45,5 @@
   - `DefaultJWTService` - JWT 服务实现
   - `createJWTMiddleware` - JWT 中间件工厂函数
   - 支持 token 生成、验证和刷新
-
-### 🔧 核心功能
-- 状态管理服务用于 OAuth 流程
-- 类型安全的 API 设计
-- 完整的错误处理
-- 环境变量配置支持
-
-### 📚 文档
-- 详细的安装和使用说明
-- 完整的 API 文档
-- 环境变量配置指南
-- 使用示例代码
-
-### 🔐 安全性
-- OAuth state 参数验证
-- 安全的 token 处理
-- 环境变量配置验证
 </details>
 
-## 当前版本
-
-当前最新版本是 **0.1.3**。
-
-<!-- 在此处添加新版本，最新版本放在最上面 -->
-
-<details open>
-<summary><strong>0.1.3</strong> (2023-06-15)</summary>
-
-## 🔥 新功能
-
-### ✨ 文件上传服务
-- `createUploadService` - 创建通用文件上传服务
-- 支持多种文件类型的上传
-- 支持自定义上传目录
-- 支持文件大小和类型验证
-- 与 JWT 中间件兼容
-- 支持自定义文件名生成
-
-### 📝 文档
-- 添加了文件上传服务的使用示例
-- 完整的 API 文档
-- 改进了 JSDoc 注释，提高了 JSR 文档分数
-
-### 🔧 维护
-- 优化了文件结构
-- 改进了类型定义
-
-</details>
