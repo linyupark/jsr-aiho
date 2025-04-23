@@ -1,3 +1,31 @@
+/**
+ * @aiho/hono 是一个基于 Hono 框架的实用工具集，提供 OAuth、JWT 和其他实用功能。
+ * 该模块导出所有主要功能，包括 OAuth 认证、JWT 认证和授权、状态管理等。
+ *
+ * @example
+ * ```ts
+ * // 使用 GitHub OAuth
+ * import { getGithubRedirectUrl, handleGithubCallback } from "@aiho/hono";
+ *
+ * const app = new Hono();
+ * app.get("/auth/github", (c) => getGithubRedirectUrl(c));
+ * app.get("/auth/github/callback", (c) => handleGithubCallback(c));
+ * ```
+ *
+ * @example
+ * ```ts
+ * // 使用 JWT 认证
+ * import { DefaultJWTService, createJWTMiddleware } from "@aiho/hono";
+ *
+ * const jwtService = new DefaultJWTService({ secret: "your-secret" });
+ * const jwtMiddleware = createJWTMiddleware(jwtService.verify.bind(jwtService));
+ *
+ * app.get("/protected", jwtMiddleware, (c) => c.json({ message: "Protected route" }));
+ * ```
+ *
+ * @module
+ */
+
 // 导出类型
 export type {
   // Hono Context 类型

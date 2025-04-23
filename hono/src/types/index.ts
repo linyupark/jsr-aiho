@@ -1,3 +1,26 @@
+/**
+ * 类型索引模块，集中导出所有类型定义。
+ * 该模块将所有类型集中在一个地方，便于导入和使用。
+ *
+ * @example
+ * ```ts
+ * import type { Context, JWTPayload, GitHubEmail } from "@aiho/hono";
+ *
+ * // 使用 Context 类型
+ * const handler = (c: Context) => {
+ *   return c.json({ message: "Hello" });
+ * };
+ *
+ * // 使用 JWTPayload 类型
+ * const payload: JWTPayload = {
+ *   userId: "123",
+ *   role: "admin"
+ * };
+ * ```
+ *
+ * @module
+ */
+
 import type { Context } from 'hono'
 
 // 重新导出 Hono Context 类型

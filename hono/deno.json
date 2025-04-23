@@ -1,6 +1,6 @@
 {
   "name": "@aiho/hono",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Hono utilities for OAuth, JWT and more",
   "exports": {
     ".": "./mod.ts",

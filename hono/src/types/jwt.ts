@@ -1,4 +1,29 @@
 /**
+ * JWT 类型模块，定义了与 JWT 相关的类型和接口。
+ * 该模块包含 JWT 负载数据、上下文变量、配置和服务接口的类型定义。
+ *
+ * @example
+ * ```ts
+ * import type { JWTPayload, JWTConfig, JWTService } from "@aiho/hono/jwt";
+ *
+ * // 使用 JWT 负载数据类型
+ * const payload: JWTPayload = {
+ *   userId: "123",
+ *   role: "admin",
+ *   exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7 // 7 天后过期
+ * };
+ *
+ * // 使用 JWT 配置类型
+ * const config: JWTConfig = {
+ *   secret: "your-secret-key",
+ *   validityPeriod: 60 * 60 * 24 * 7 // 7 天
+ * };
+ * ```
+ *
+ * @module
+ */
+
+/**
  * JWT 负载数据类型
  */
 export type JWTPayload = {

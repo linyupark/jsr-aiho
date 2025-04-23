@@ -1,3 +1,21 @@
+/**
+ * Hello World 模块，提供了一个简单的示例服务。
+ * 该模块主要用于演示和测试目的。
+ *
+ * @example
+ * ```ts
+ * import { Hono } from "hono";
+ * import { helloWorld } from "@aiho/hono";
+ *
+ * const app = new Hono();
+ *
+ * // 添加 Hello World 路由
+ * app.get("/hello", helloWorld);
+ * ```
+ *
+ * @module
+ */
+
 import type { Context } from 'hono'
 
 /**

@@ -1,3 +1,31 @@
+/**
+ * Google OAuth 模块，提供了与 Google OAuth 认证集成的功能。
+ * 该模块包含生成 Google 认证重定向 URL 和处理回调的功能。
+ *
+ * @example
+ * ```ts
+ * import { Hono } from "hono";
+ * import { getGoogleRedirectUrl, handleGoogleCallback } from "@aiho/hono/oauth/google";
+ *
+ * // 设置环境变量
+ * // GOOGLE_CLIENT_ID=your-client-id
+ * // GOOGLE_CLIENT_SECRET=your-client-secret
+ * // GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
+ *
+ * const app = new Hono();
+ *
+ * // Google OAuth 路由
+ * app.get("/auth/google", (c) => getGoogleRedirectUrl(c));
+ * app.get("/auth/google/callback", async (c) => {
+ *   const userInfo = await handleGoogleCallback(c);
+ *   // 处理用户信息，例如创建会话或设置 cookie
+ *   return c.json(userInfo);
+ * });
+ * ```
+ *
+ * @module
+ */
+
 import type { Context } from 'hono'
 import { createState, deleteStateData, getStateData } from './state_manager.ts' // 导入 state 管理函数
 

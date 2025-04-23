@@ -1,3 +1,31 @@
+/**
+ * GitHub OAuth 模块，提供了与 GitHub OAuth 认证集成的功能。
+ * 该模块包含生成 GitHub 认证重定向 URL 和处理回调的功能。
+ *
+ * @example
+ * ```ts
+ * import { Hono } from "hono";
+ * import { getGithubRedirectUrl, handleGithubCallback } from "@aiho/hono/oauth/github";
+ *
+ * // 设置环境变量
+ * // GITHUB_CLIENT_ID=your-client-id
+ * // GITHUB_CLIENT_SECRET=your-client-secret
+ * // GITHUB_REDIRECT_URI=http://localhost:8000/auth/github/callback
+ *
+ * const app = new Hono();
+ *
+ * // GitHub OAuth 路由
+ * app.get("/auth/github", (c) => getGithubRedirectUrl(c));
+ * app.get("/auth/github/callback", async (c) => {
+ *   const userInfo = await handleGithubCallback(c);
+ *   // 处理用户信息，例如创建会话或设置 cookie
+ *   return c.json(userInfo);
+ * });
+ * ```
+ *
+ * @module
+ */
+
 import type { Context, GitHubEmail } from '../types/index.ts'
 import { createState, getStateData, deleteStateData } from './state_manager.ts' // 导入 state 管理函数
 
