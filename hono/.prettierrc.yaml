@@ -1,0 +1,9 @@
+tabWidth: 2
+semi: false
+printWidth: 80
+singleQuote: true
+quoteProps: consistent
+htmlWhitespaceSensitivity: strict
+bracketSameLine: true
+vueIndentScriptAndStyle: false
+trailingComma: none

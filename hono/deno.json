@@ -1,0 +1,25 @@
+{
+  "name": "@aiho/hono",
+  "version": "0.1.0",
+  "description": "Hono utilities for OAuth, JWT and more",
+  "exports": {
+    ".": "./mod.ts",
+    "./jwt": "./src/services/jwt.ts",
+    "./middleware": "./src/middleware/jwt.ts",
+    "./oauth/github": "./src/services/oauth_github.ts",
+    "./oauth/google": "./src/services/oauth_google.ts",
+    "./state": "./src/services/state_manager.ts"
+  },
+  "imports": {
+    "hono": "jsr:@hono/hono@^4.7.7",
+    "hono/": "jsr:@hono/hono@^4.7.7/",
+    "hono/jwt": "jsr:@hono/hono@^4.7.7/jwt"
+  },
+  "publish": {
+    "include": ["src/**/*.ts", "mod.ts", "README.md", "LICENSE"]
+  },
+  "dependencies": {
+    "@hono/hono": "^4"
+  },
+  "license": "MIT"
+}
