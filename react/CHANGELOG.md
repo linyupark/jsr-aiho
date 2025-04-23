@@ -10,6 +10,25 @@
 
 
 <details open>
+<summary><strong>0.1.2</strong></summary>
+
+## 🔥 增强
+
+### 🔥 useDevice hook 增强
+- 增强了 `useDevice` hook，添加 `isDetecting` 状态标记
+- 改进了设备检测逻辑，避免默认值导致的不准确判断
+- 增强了客户端检测，避免服务器端渲染问题
+- 更新了文档和示例代码，展示如何利用 `isDetecting` 状态
+
+## 🐛 修复
+
+### 🐛 修复 useSafeArea hook 的无限循环问题
+- 修复了 `useSafeArea` hook 在 useEffect 中使用 setState 触发死循环的问题
+- 使用 useMemo 缓存配置对象，避免不必要的重新渲染
+
+</details>
+
+<details>
 <summary><strong>0.1.1</strong></summary>
 
 ## ✨ 新功能

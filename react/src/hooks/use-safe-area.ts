@@ -54,7 +54,7 @@
  * @module
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 /**
  * 安全区域接口
@@ -114,11 +114,14 @@ const DEFAULT_CSS_VAR_NAMES: CssVarNames = {
  * @returns 包含安全区域尺寸的对象
  */
 export function useSafeArea(options: UseSafeAreaOptions = {}): SafeArea {
-  // 合并默认配置和用户配置
-  const cssVarNames: CssVarNames = {
-    ...DEFAULT_CSS_VAR_NAMES,
-    ...options.cssVarNames
-  }
+  // 使用 useMemo 缓存 cssVarNames 对象，避免每次渲染时创建新对象
+  const cssVarNames = useMemo<CssVarNames>(
+    () => ({
+      ...DEFAULT_CSS_VAR_NAMES,
+      ...options.cssVarNames
+    }),
+    [options.cssVarNames]
+  )
 
   const [safeArea, setSafeArea] = useState<SafeArea>({
     top: 0,

@@ -109,7 +109,12 @@ import { useDevice } from "jsr:@aiho/react/hooks";
 
 // 使用默认配置
 function App() {
-  const { isMobile, deviceType } = useDevice();
+  const { isMobile, deviceType, isDetecting } = useDevice();
+
+  // 在检测完成前显示加载状态
+  if (isDetecting) {
+    return <div>正在检测设备信息...</div>;
+  }
 
   return (
     <div>
@@ -121,13 +126,14 @@ function App() {
 
 // 使用自定义配置
 function CustomApp() {
-  const { isMobile, deviceType } = useDevice({
+  const { isMobile, deviceType, isDetecting } = useDevice({
     mobileBreakpoint: 640  // 自定义断点宽度
   });
 
   return (
     <div>
-      {isMobile ? '移动端布局' : '桌面端布局'}
+      {isDetecting ? '正在检测...' :
+        isMobile ? '移动端布局' : '桌面端布局'}
       <p>设备类型: {deviceType}</p>
     </div>
   );
@@ -176,7 +182,7 @@ interface SafeArea {
 ### useDevice
 
 ```tsx
-function useDevice(options?: UseDeviceOptions): { isMobile: boolean; deviceType: DeviceType }
+function useDevice(options?: UseDeviceOptions): { isMobile: boolean; deviceType: DeviceType; isDetecting: boolean }
 
 interface UseDeviceOptions {
   mobileBreakpoint?: number; // 移动设备断点宽度，默认为 768px
