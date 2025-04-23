@@ -43,8 +43,14 @@ const GOOGLE_USERINFO_URL: string =
 
 /**
  * 获取 Google OAuth 重定向 URL
+ * 该函数生成一个重定向到 Google OAuth 授权页面的 URL，并将用户重定向到该页面
+ *
  * @param c Hono 上下文
- * @returns 重定向响应
+ * @returns 重定向响应，将用户导向 Google 授权页面
+ * @throws 如果环境变量未配置，将返回 500 错误
+ *
+ * @requires GOOGLE_CLIENT_ID - 环境变量，Google OAuth 客户端 ID
+ * @requires GOOGLE_REDIRECT_URI - 环境变量，Google OAuth 回调 URL
  */
 export const getGoogleRedirectUrl = (c: Context): Response => {
   const clientId = Deno.env.get('GOOGLE_CLIENT_ID')
@@ -74,8 +80,16 @@ export const getGoogleRedirectUrl = (c: Context): Response => {
 
 /**
  * 处理 Google OAuth 回调
+ * 该函数处理来自 Google OAuth 服务的回调请求，验证授权码和状态，
+ * 获取访问令牌，然后获取用户信息
+ *
  * @param c Hono 上下文
  * @returns 包含用户信息的响应或错误响应
+ * @throws 如果授权码缺失、状态无效或环境变量未配置，将返回相应的错误响应
+ *
+ * @requires GOOGLE_CLIENT_ID - 环境变量，Google OAuth 客户端 ID
+ * @requires GOOGLE_CLIENT_SECRET - 环境变量，Google OAuth 客户端密钥
+ * @requires GOOGLE_REDIRECT_URI - 环境变量，Google OAuth 回调 URL
  */
 export const handleGoogleCallback = async (c: Context): Promise<Response> => {
   const code = c.req.query('code')

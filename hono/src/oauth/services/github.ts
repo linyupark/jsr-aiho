@@ -43,8 +43,14 @@ const GITHUB_USER_URL: string = 'https://api.github.com/user'
 
 /**
  * 获取 GitHub OAuth 重定向 URL
+ * 该函数生成一个重定向到 GitHub OAuth 授权页面的 URL，并将用户重定向到该页面
+ *
  * @param c Hono 上下文
- * @returns 重定向响应
+ * @returns 重定向响应，将用户导向 GitHub 授权页面
+ * @throws 如果环境变量未配置，将返回 500 错误
+ *
+ * @requires GITHUB_CLIENT_ID - 环境变量，GitHub OAuth 客户端 ID
+ * @requires GITHUB_REDIRECT_URI - 环境变量，GitHub OAuth 回调 URL
  */
 export const getGithubRedirectUrl = (c: Context): Response => {
   const clientId = Deno.env.get('GITHUB_CLIENT_ID')
@@ -71,8 +77,16 @@ export const getGithubRedirectUrl = (c: Context): Response => {
 
 /**
  * 处理 GitHub OAuth 回调
+ * 该函数处理来自 GitHub OAuth 服务的回调请求，验证授权码和状态，
+ * 获取访问令牌，然后获取用户信息和邮箱
+ *
  * @param c Hono 上下文
  * @returns 包含用户信息的响应或错误响应
+ * @throws 如果授权码缺失、状态无效或环境变量未配置，将返回相应的错误响应
+ *
+ * @requires GITHUB_CLIENT_ID - 环境变量，GitHub OAuth 客户端 ID
+ * @requires GITHUB_CLIENT_SECRET - 环境变量，GitHub OAuth 客户端密钥
+ * @requires GITHUB_REDIRECT_URI - 环境变量，GitHub OAuth 回调 URL
  */
 export const handleGithubCallback = async (c: Context): Promise<Response> => {
   const code = c.req.query('code')

@@ -32,7 +32,17 @@ const STATE_EXPIRATION_MS: number = 10 * 60 * 1000
 
 /**
  * 清理过期的 state
+ * 该函数会遍历所有存储的 state，并删除那些超过有效期的 state
+ *
  * @returns void
+ *
+ * @example
+ * ```ts
+ * import { clearExpiredStateData } from "@aiho/hono/state";
+ *
+ * // 清理过期的 state
+ * clearExpiredStateData();
+ * ```
  */
 export const clearExpiredStateData = (): void => {
   const now = Date.now()
@@ -46,9 +56,21 @@ export const clearExpiredStateData = (): void => {
 
 /**
  * 创建一个新的 state 并存储关联的数据
+ * 该函数生成一个唯一的 state 字符串，并将其与提供的数据关联起来
+ * 在创建新 state 前，会自动清理过期的 state
+ *
  * @template T 存储的数据类型
  * @param data 要与 state 关联的数据
- * @returns 生成的 state 字符串
+ * @returns 生成的 state 字符串，可用于后续的验证
+ *
+ * @example
+ * ```ts
+ * import { createState } from "@aiho/hono/state";
+ *
+ * // 创建一个包含重定向 URL 的 state
+ * const state = createState({ redirectUri: "http://localhost:8000/callback" });
+ * console.log(state); // 例如："550e8400-e29b-41d4-a716-446655440000"
+ * ```
  */
 export const createState = <T>(data: T): string => {
   // 定期清理过期 state
@@ -63,9 +85,23 @@ export const createState = <T>(data: T): string => {
 
 /**
  * 获取并校验 state，返回关联的数据
+ * 该函数验证提供的 state 是否有效且未过期，如果有效则返回关联的数据
+ * 如果 state 无效或已过期，则返回 null
+ *
  * @template T 存储的数据类型
  * @param state 从外部获取的 state 字符串
  * @returns 如果 state 有效且未过期，返回存储的数据；否则返回 null
+ *
+ * @example
+ * ```ts
+ * import { getStateData } from "@aiho/hono/state";
+ *
+ * // 获取 state 关联的数据
+ * const stateData = getStateData<{ redirectUri: string }>("550e8400-e29b-41d4-a716-446655440000");
+ * if (stateData) {
+ *   console.log(stateData.redirectUri); // 例如："http://localhost:8000/callback"
+ * }
+ * ```
  */
 export const getStateData = <T>(state: string): T | null => {
   const stateData = stateStore.get(state) as StateData<T> | undefined
@@ -87,8 +123,19 @@ export const getStateData = <T>(state: string): T | null => {
 
 /**
  * 删除一个已使用的 state
+ * 该函数从存储中删除指定的 state 及其关联数据
+ * 通常在成功验证 state 后调用，以防止重放攻击
+ *
  * @param state 要删除的 state 字符串
  * @returns void
+ *
+ * @example
+ * ```ts
+ * import { deleteStateData } from "@aiho/hono/state";
+ *
+ * // 删除已使用的 state
+ * deleteStateData("550e8400-e29b-41d4-a716-446655440000");
+ * ```
  */
 export const deleteStateData = (state: string): void => {
   if (stateStore.delete(state)) {

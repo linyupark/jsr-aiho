@@ -1,9 +1,15 @@
 # 更新日志 (CHANGELOG)
 
-本文档记录了 @aiho/hono 的所有重要变更。
+本文档记录了 @aiho/hono 的所有重要变更。我们遵循 [Semantic Versioning](https://semver.org/lang/zh-CN/) 规范，并使用以下标记来标识变更类型：
+
+- **✨ 新功能**：新增的功能
+- **🔥 增强**：对现有功能的改进
+- **🐛 修复**：错误修复
+- **📝 文档**：文档更新
+- **🔧 维护**：代码维护和优化
 
 <details>
-<summary><strong>0.1.2</strong></summary>
+<summary><strong>0.1.2</strong> (2023-05-20)</summary>
 
 ## 🎉 首次发布
 
@@ -42,10 +48,14 @@
 - 环境变量配置验证
 </details>
 
+## 当前版本
+
+当前最新版本是 **0.1.3**。
+
 <!-- 在此处添加新版本，最新版本放在最上面 -->
 
 <details open>
-<summary><strong>0.1.3</strong></summary>
+<summary><strong>0.1.3</strong> (2023-06-15)</summary>
 
 ## 🔥 新功能
 
@@ -60,5 +70,10 @@
 ### 📝 文档
 - 添加了文件上传服务的使用示例
 - 完整的 API 文档
+- 改进了 JSDoc 注释，提高了 JSR 文档分数
+
+### 🔧 维护
+- 优化了文件结构
+- 改进了类型定义
 
 </details>

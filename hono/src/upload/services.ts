@@ -68,8 +68,29 @@ const defaultConfig: Partial<UploadConfig> = {
 
 /**
  * 创建上传服务
- * @param config 上传配置
- * @returns 上传服务实例
+ * 该函数创建一个文件上传服务实例，可用于处理文件上传请求
+ * 服务实例将根据提供的配置进行文件类型验证、大小验证和存储
+ *
+ * @param config 上传配置，包含允许的文件类型、最大文件大小和上传目录等
+ * @returns 上传服务实例，包含 handleUpload 方法
+ *
+ * @example
+ * ```ts
+ * import { Hono } from "hono";
+ * import { createUploadService } from "@aiho/hono/upload";
+ *
+ * const app = new Hono();
+ *
+ * // 创建头像上传服务
+ * const avatarUploadService = createUploadService({
+ *   allowedTypes: ["image/jpeg", "image/png", "image/gif"],
+ *   maxSize: 2 * 1024 * 1024, // 2MB
+ *   uploadDir: "avatars"
+ * });
+ *
+ * // 添加上传路由
+ * app.post("/upload/avatar", (c) => avatarUploadService.handleUpload(c));
+ * ```
  */
 export const createUploadService = (config: UploadConfig): UploadService => {
   // 合并默认配置

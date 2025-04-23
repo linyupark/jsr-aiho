@@ -34,8 +34,35 @@ import type { JWTPayload, Variables } from './types.ts'
 
 /**
  * 创建 JWT 验证中间件
+ * 该函数创建一个 Hono 中间件，用于验证请求中的 JWT 令牌
+ * 中间件会从 Authorization 头部提取 Bearer 令牌，验证其有效性，
+ * 并将令牌负载数据存储在上下文中
+ *
  * @param verifyFn JWT 验证函数，用于验证令牌并返回负载数据
  * @returns Hono 中间件函数，用于验证请求中的 JWT 令牌
+ *
+ * @example
+ * ```ts
+ * import { Hono } from "hono";
+ * import { DefaultJWTService } from "@aiho/hono/jwt";
+ * import { createJWTMiddleware } from "@aiho/hono/jwt/middleware";
+ *
+ * const app = new Hono();
+ *
+ * // 创建 JWT 服务
+ * const jwtService = new DefaultJWTService({
+ *   secret: "your-secret-key"
+ * });
+ *
+ * // 创建 JWT 中间件
+ * const jwtMiddleware = createJWTMiddleware(jwtService.verify.bind(jwtService));
+ *
+ * // 使用中间件保护路由
+ * app.get("/protected", jwtMiddleware, (c) => {
+ *   const payload = c.get("jwtPayload");
+ *   return c.json({ message: "Protected route", user: payload });
+ * });
+ * ```
  */
 export const createJWTMiddleware = (
   verifyFn: (token: string) => Promise<JWTPayload>

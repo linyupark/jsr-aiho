@@ -32,7 +32,31 @@ import type { JWTConfig, JWTPayload, JWTService } from './types.ts'
 
 /**
  * JWT 服务的默认实现，提供 JWT 的生成、验证和管理功能
+ * 该类实现了 JWTService 接口，提供了签发和验证 JWT 令牌的方法
+ *
  * @implements {JWTService}
+ *
+ * @example
+ * ```ts
+ * import { DefaultJWTService } from "@aiho/hono/jwt";
+ *
+ * // 创建 JWT 服务实例
+ * const jwtService = new DefaultJWTService({
+ *   secret: "your-secret-key",
+ *   validityPeriod: 60 * 60 * 24 * 7 // 7 天
+ * });
+ *
+ * // 签发令牌
+ * const token = await jwtService.sign({ userId: "123", role: "admin" });
+ *
+ * // 验证令牌
+ * try {
+ *   const payload = await jwtService.verify(token);
+ *   console.log(payload); // { userId: "123", role: "admin", exp: 1650000000 }
+ * } catch (error) {
+ *   console.error("Invalid token");
+ * }
+ * ```
  */
 export class DefaultJWTService implements JWTService {
   private secret: string
