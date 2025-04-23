@@ -6,7 +6,7 @@
  * ```ts
  * import { Hono } from "hono";
  * import { DefaultJWTService } from "@aiho/hono/jwt";
- * import { createJWTMiddleware } from "@aiho/hono/middleware";
+ * import { createJWTMiddleware } from "@aiho/hono/jwt/middleware";
  *
  * const app = new Hono();
  *
@@ -30,7 +30,7 @@
  */
 
 import type { Context, Next } from 'hono'
-import type { JWTPayload, Variables } from '../types/jwt.ts'
+import type { JWTPayload, Variables } from './types.ts'
 
 /**
  * 创建 JWT 验证中间件

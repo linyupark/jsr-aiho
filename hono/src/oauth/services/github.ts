@@ -5,7 +5,7 @@
  * @example
  * ```ts
  * import { Hono } from "hono";
- * import { getGithubRedirectUrl, handleGithubCallback } from "@aiho/hono/oauth/github";
+ * import { getGithubRedirectUrl, handleGithubCallback } from "@aiho/hono/oauth/services/github";
  *
  * // 设置环境变量
  * // GITHUB_CLIENT_ID=your-client-id
@@ -26,8 +26,13 @@
  * @module
  */
 
-import type { Context, GitHubEmail } from '../types/index.ts'
-import { createState, getStateData, deleteStateData } from './state_manager.ts' // 导入 state 管理函数
+import type { Context } from 'hono'
+import type { GitHubEmail } from '../../oauth/types.ts'
+import {
+  createState,
+  getStateData,
+  deleteStateData
+} from '../../state/services.ts' // 导入 state 管理函数
 
 /** GitHub OAuth 授权 URL */
 const GITHUB_AUTH_URL: string = 'https://github.com/login/oauth/authorize'

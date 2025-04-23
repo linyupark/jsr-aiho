@@ -28,7 +28,7 @@
  */
 
 import { sign, verify } from 'hono/jwt'
-import type { JWTConfig, JWTPayload, JWTService } from '../types/jwt.ts'
+import type { JWTConfig, JWTPayload, JWTService } from './types.ts'
 
 /**
  * JWT 服务的默认实现，提供 JWT 的生成、验证和管理功能

@@ -26,38 +26,52 @@
  * @module
  */
 
-// 导出类型
+import type { Context } from 'hono'
+
+// 导出 Hono Context 类型
+export type { Context }
+
+// 导出 JWT 相关类型
 export type {
-  // Hono Context 类型
-  Context,
-  // 服务函数类型
-  HelloWorldService,
-  // GitHub OAuth 服务函数类型
-  GetGithubRedirectUrlService,
-  HandleGithubCallbackService,
-  // Google OAuth 服务函数类型
-  GetGoogleRedirectUrlService,
-  HandleGoogleCallbackService,
-  // JWT 类型
   JWTPayload,
   Variables,
   JWTConfig,
   JWTService
-} from './src/types/index.ts'
+} from './src/jwt/types.ts'
+
+// 导出 OAuth 相关类型
+export type {
+  GitHubEmail,
+  GetGithubRedirectUrlService,
+  HandleGithubCallbackService,
+  GetGoogleRedirectUrlService,
+  HandleGoogleCallbackService
+} from './src/oauth/types.ts'
+
+// 导出 State 相关类型
+export type { StateData } from './src/state/types.ts'
+
+// 导出 Upload 相关类型
+export type {
+  UploadConfig,
+  UploadResult,
+  UploadService
+} from './src/upload/types.ts'
 
 // 导出 JWT 相关
-export { DefaultJWTService } from './src/services/jwt.ts'
-export { createJWTMiddleware } from './src/middleware/jwt.ts'
+export { DefaultJWTService } from './src/jwt/services.ts'
+export { createJWTMiddleware } from './src/jwt/middleware.ts'
 
 // 导出 OAuth 相关
 export {
   getGithubRedirectUrl,
   handleGithubCallback
-} from './src/services/oauth_github.ts'
+} from './src/oauth/services/github.ts'
+
 export {
   getGoogleRedirectUrl,
   handleGoogleCallback
-} from './src/services/oauth_google.ts'
+} from './src/oauth/services/google.ts'
 
 // 导出状态管理
 export {
@@ -65,7 +79,7 @@ export {
   getStateData,
   deleteStateData,
   clearExpiredStateData
-} from './src/services/state_manager.ts'
+} from './src/state/services.ts'
 
-// 导出 Hello World 示例
-export { helloWorld } from './src/services/helloworld.ts'
+// 导出上传服务
+export { createUploadService } from './src/upload/index.ts'

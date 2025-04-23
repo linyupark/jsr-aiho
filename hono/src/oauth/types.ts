@@ -1,20 +1,23 @@
 /**
- * 类型索引模块，集中导出所有类型定义。
- * 该模块将所有类型集中在一个地方，便于导入和使用。
+ * OAuth 类型模块，定义了与 OAuth 认证相关的类型和接口。
+ * 该模块包含 GitHub 和 Google OAuth 服务的类型定义。
  *
  * @example
  * ```ts
- * import type { Context, JWTPayload, GitHubEmail } from "@aiho/hono";
+ * import type { GitHubEmail, GetGithubRedirectUrlService } from "@aiho/hono/oauth/types";
  *
- * // 使用 Context 类型
- * const handler = (c: Context) => {
- *   return c.json({ message: "Hello" });
+ * // 使用 GitHub 邮箱类型
+ * const email: GitHubEmail = {
+ *   email: "user@example.com",
+ *   primary: true,
+ *   verified: true,
+ *   visibility: "public"
  * };
  *
- * // 使用 JWTPayload 类型
- * const payload: JWTPayload = {
- *   userId: "123",
- *   role: "admin"
+ * // 使用 OAuth 服务类型
+ * const getRedirectUrl: GetGithubRedirectUrlService = (c) => {
+ *   // 实现重定向逻辑
+ *   return c.redirect("https://github.com/login/oauth/authorize?...");
  * };
  * ```
  *
@@ -22,12 +25,6 @@
  */
 
 import type { Context } from 'hono'
-
-// 重新导出 Hono Context 类型
-export type { Context }
-
-// 导出 JWT 相关类型
-export type { JWTPayload, Variables, JWTConfig, JWTService } from './jwt.ts'
 
 /**
  * GitHub 用户邮箱信息接口
@@ -42,11 +39,6 @@ export interface GitHubEmail {
   /** 可见性设置 */
   visibility: string | null
 }
-
-/**
- * HelloWorld 服务函数类型
- */
-export type HelloWorldService = (c: Context) => Response | Promise<Response>
 
 /**
  * GitHub OAuth 重定向 URL 服务函数类型

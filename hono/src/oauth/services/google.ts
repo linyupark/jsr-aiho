@@ -5,7 +5,7 @@
  * @example
  * ```ts
  * import { Hono } from "hono";
- * import { getGoogleRedirectUrl, handleGoogleCallback } from "@aiho/hono/oauth/google";
+ * import { getGoogleRedirectUrl, handleGoogleCallback } from "@aiho/hono/oauth/services/google";
  *
  * // 设置环境变量
  * // GOOGLE_CLIENT_ID=your-client-id
@@ -27,7 +27,11 @@
  */
 
 import type { Context } from 'hono'
-import { createState, deleteStateData, getStateData } from './state_manager.ts' // 导入 state 管理函数
+import {
+  createState,
+  deleteStateData,
+  getStateData
+} from '../../state/services.ts' // 导入 state 管理函数
 
 /** Google OAuth 授权 URL */
 const GOOGLE_AUTH_URL: string = 'https://accounts.google.com/o/oauth2/v2/auth'

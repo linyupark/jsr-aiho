@@ -7,6 +7,7 @@
 - OAuth 认证（GitHub 和 Google）
 - JWT 认证和授权
 - 状态管理
+- 文件上传服务
 
 ## 安装
 
@@ -17,8 +18,9 @@
 import * as aihoHono from "jsr:@aiho/hono";
 
 // 或者单独导入特定功能
-import { getGithubRedirectUrl } from "jsr:@aiho/hono/oauth/github";
+import { getGithubRedirectUrl } from "jsr:@aiho/hono/oauth/services/github";
 import { DefaultJWTService } from "jsr:@aiho/hono/jwt";
+import { createUploadService } from "jsr:@aiho/hono/upload";
 ```
 
 ## 使用示例
@@ -27,7 +29,7 @@ import { DefaultJWTService } from "jsr:@aiho/hono/jwt";
 
 ```ts
 import { Hono } from "hono";
-import { getGithubRedirectUrl, handleGithubCallback } from "jsr:@aiho/hono/oauth/github";
+import { getGithubRedirectUrl, handleGithubCallback } from "jsr:@aiho/hono/oauth/services/github";
 
 const app = new Hono();
 
@@ -43,7 +45,7 @@ Deno.serve(app.fetch);
 ```ts
 import { Hono } from "hono";
 import { DefaultJWTService } from "jsr:@aiho/hono/jwt";
-import { createJWTMiddleware } from "jsr:@aiho/hono/middleware";
+import { createJWTMiddleware } from "jsr:@aiho/hono/jwt/middleware";
 
 const app = new Hono();
 
@@ -61,6 +63,39 @@ app.get("/protected", jwtMiddleware, (c) => {
   const payload = c.get("jwtPayload");
   return c.json({ message: "Protected route", user: payload });
 });
+
+Deno.serve(app.fetch);
+```
+
+### 文件上传服务
+
+```ts
+import { Hono } from "hono";
+import { createUploadService } from "jsr:@aiho/hono/upload";
+import { createJWTMiddleware } from "jsr:@aiho/hono/jwt/middleware";
+
+const app = new Hono();
+
+// 创建 JWT 中间件
+// ...
+
+// 创建头像上传服务
+const avatarUploadService = createUploadService({
+  allowedTypes: /image\/(jpeg|jpg|png|gif|webp)/,
+  maxSize: 2 * 1024 * 1024, // 2MB
+  uploadDir: "avatars"
+});
+
+// 创建文档上传服务
+const documentUploadService = createUploadService({
+  allowedTypes: ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"],
+  maxSize: 10 * 1024 * 1024, // 10MB
+  uploadDir: "documents"
+});
+
+// 使用上传服务
+app.post("/upload/avatar", jwtMiddleware, (c) => avatarUploadService.handleUpload(c));
+app.post("/upload/document", jwtMiddleware, (c) => documentUploadService.handleUpload(c));
 
 Deno.serve(app.fetch);
 ```
@@ -87,40 +122,4 @@ MIT
 
 ## 更新日志 (CHANGELOG)
 
-### [0.1.2]
-
-#### 🎉 首次发布
-
-##### ✨ 新功能
-- OAuth 认证支持
-  - GitHub OAuth 集成
-    - `getGithubRedirectUrl` - 获取 GitHub 认证重定向 URL
-    - `handleGithubCallback` - 处理 GitHub OAuth 回调
-  - Google OAuth 集成
-    - `getGoogleRedirectUrl` - 获取 Google 认证重定向 URL
-    - `handleGoogleCallback` - 处理 Google OAuth 回调
-    - 支持获取用户基本信息(email、profile等)
-    - 实现 state 管理确保安全性
-    - 完整的错误处理机制
-
-- JWT 认证与授权
-  - `DefaultJWTService` - JWT 服务实现
-  - `createJWTMiddleware` - JWT 中间件工厂函数
-  - 支持 token 生成、验证和刷新
-
-##### 🔧 核心功能
-- 状态管理服务用于 OAuth 流程
-- 类型安全的 API 设计
-- 完整的错误处理
-- 环境变量配置支持
-
-##### 📚 文档
-- 详细的安装和使用说明
-- 完整的 API 文档
-- 环境变量配置指南
-- 使用示例代码
-
-##### 🔐 安全性
-- OAuth state 参数验证
-- 安全的 token 处理
-- 环境变量配置验证
+查看完整的[更新日志](./CHANGELOG.md)了解所有版本的变更详情。

@@ -22,16 +22,7 @@
  * @module
  */
 
-/**
- * 通用状态数据接口，允许存储任意类型的数据。
- * @template T 存储的数据类型
- */
-interface StateData<T = unknown> {
-  /** 存储的数据 */
-  data: T
-  /** 创建时间戳（毫秒） */
-  createdAt: number
-}
+import type { StateData } from './types.ts'
 
 /** 使用 Map 存储 state，键是 state 字符串，值是包含数据和创建时间戳的对象 */
 const stateStore = new Map<string, StateData>()
