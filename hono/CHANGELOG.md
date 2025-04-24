@@ -10,6 +10,29 @@
 
 
 <details open>
+<summary><strong>0.1.5</strong></summary>
+
+## 🔧 维护
+
+### 🔥 模块结构优化
+- 重构项目结构，遵循 JSR 规范，使用 `mod.ts` 作为模块入口
+- 为 `jwt`、`oauth`、`state` 和 `upload` 模块添加了 `mod.ts` 文件
+- 将 `upload/index.ts` 重命名为 `upload/mod.ts`
+- 优化导出结构，支持按需引入以减小打包体积
+
+### 📝 文档更新
+- 更新 README 中的导入示例，推荐使用按需导入方式
+- 添加更详细的模块导入说明和示例
+- 完善 API 文档，明确各模块的导入路径
+
+### 🔥 导出路径增强
+- 添加更细粒度的导出路径，支持直接访问子模块
+- 移除整体导入方式，鼓励使用模块化导入以优化打包体积
+- 保留原有细粒度导入路径，确保向后兼容性
+
+</details>
+
+<details>
 <summary><strong>0.1.4</strong></summary>
 
 ## 🔥 新功能

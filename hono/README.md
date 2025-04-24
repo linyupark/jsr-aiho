@@ -13,25 +13,31 @@
 
 ## 主要模块
 
-- `@aiho/hono/jwt`：JWT 服务和类型
-- `@aiho/hono/jwt/middleware`：JWT 中间件
-- `@aiho/hono/oauth/services/github`：GitHub OAuth 集成
-- `@aiho/hono/oauth/services/google`：Google OAuth 集成
+- `@aiho/hono/jwt`：JWT 服务和中间件
+- `@aiho/hono/oauth`：OAuth 认证服务（GitHub、Google）
 - `@aiho/hono/state`：状态管理服务
 - `@aiho/hono/upload`：文件上传服务
+
+每个主要模块还提供了更细粒度的导入路径，例如：
+
+- `@aiho/hono/jwt/middleware`：JWT 中间件
+- `@aiho/hono/jwt/services`：JWT 服务
+- `@aiho/hono/oauth/services/github`：GitHub OAuth 集成
+- `@aiho/hono/oauth/services/google`：Google OAuth 集成
 
 ## 安装
 
 ### Deno
 
 ```ts
-// 导入所有功能
-import * as aihoHono from "jsr:@aiho/hono";
-
-// 或者单独导入特定功能
-import { getGithubRedirectUrl } from "jsr:@aiho/hono/oauth/services/github";
+// 按需导入特定功能（推荐方式）
+import { getGithubRedirectUrl, handleGithubCallback } from "jsr:@aiho/hono/oauth";
 import { DefaultJWTService } from "jsr:@aiho/hono/jwt";
 import { createUploadService } from "jsr:@aiho/hono/upload";
+
+// 也可以导入特定服务
+import { getGithubRedirectUrl } from "jsr:@aiho/hono/oauth/services/github";
+import { getGoogleRedirectUrl } from "jsr:@aiho/hono/oauth/services/google";
 ```
 
 ## 使用示例
@@ -40,7 +46,9 @@ import { createUploadService } from "jsr:@aiho/hono/upload";
 
 ```ts
 import { Hono } from "hono";
-import { getGithubRedirectUrl, handleGithubCallback } from "jsr:@aiho/hono/oauth/services/github";
+import { getGithubRedirectUrl, handleGithubCallback } from "jsr:@aiho/hono/oauth";
+// 或者从特定服务导入
+// import { getGithubRedirectUrl, handleGithubCallback } from "jsr:@aiho/hono/oauth/services/github";
 
 const app = new Hono();
 
@@ -55,8 +63,10 @@ Deno.serve(app.fetch);
 
 ```ts
 import { Hono } from "hono";
-import { DefaultJWTService } from "jsr:@aiho/hono/jwt";
-import { createJWTMiddleware } from "jsr:@aiho/hono/jwt/middleware";
+import { DefaultJWTService, createJWTMiddleware } from "jsr:@aiho/hono/jwt";
+// 或者分别导入
+// import { DefaultJWTService } from "jsr:@aiho/hono/jwt";
+// import { createJWTMiddleware } from "jsr:@aiho/hono/jwt/middleware";
 
 const app = new Hono();
 
@@ -83,7 +93,9 @@ Deno.serve(app.fetch);
 ```ts
 import { Hono } from "hono";
 import { createUploadService } from "jsr:@aiho/hono/upload";
-import { createJWTMiddleware } from "jsr:@aiho/hono/jwt/middleware";
+import { createJWTMiddleware } from "jsr:@aiho/hono/jwt";
+// 或者从特定路径导入
+// import { createJWTMiddleware } from "jsr:@aiho/hono/jwt/middleware";
 
 const app = new Hono();
 
@@ -133,32 +145,32 @@ MIT
 
 ## API 文档
 
-每个模块都提供了详细的 JSDoc 文档注释，可以在编辑器中查看。主要类和函数包括：
+每个模块都提供了详细的 JSDoc 文档注释，可以在编辑器中查看。主要模块和功能包括：
 
-### JWT 模块
+### JWT 模块 (`@aiho/hono/jwt`)
 
 - `DefaultJWTService`：JWT 服务的默认实现
 - `createJWTMiddleware`：创建 JWT 验证中间件
 
-### OAuth 模块
+### OAuth 模块 (`@aiho/hono/oauth`)
 
 - `getGithubRedirectUrl`：获取 GitHub OAuth 重定向 URL
 - `handleGithubCallback`：处理 GitHub OAuth 回调
 - `getGoogleRedirectUrl`：获取 Google OAuth 重定向 URL
 - `handleGoogleCallback`：处理 Google OAuth 回调
 
-### 状态管理模块
+### 状态管理模块 (`@aiho/hono/state`)
 
 - `createState`：创建一个新的 state 并存储关联的数据
 - `getStateData`：获取并校验 state，返回关联的数据
 - `deleteStateData`：删除一个已使用的 state
 - `clearExpiredStateData`：清理过期的 state
 
-### 上传模块
+### 上传模块 (`@aiho/hono/upload`)
 
 - `createUploadService`：创建文件上传服务
 - `ensureDir`：确保目录存在，如果不存在则创建
 
 ## 更新日志 (CHANGELOG)
 
-查看完整的[更新日志](./hono/CHANGELOG.md)了解所有版本的变更详情。
+查看完整的[更新日志](./CHANGELOG.md)了解所有版本的变更详情。

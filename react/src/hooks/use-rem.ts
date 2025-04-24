@@ -67,6 +67,14 @@ export interface UseRemOptions {
    * 基准字体大小，默认为 16px
    */
   baseSize?: number
+  /**
+   * 最小字体大小，默认为 12px
+   */
+  minFontSize?: number
+  /**
+   * 最大字体大小，默认为 20px
+   */
+  maxFontSize?: number
 }
 
 /**
@@ -112,17 +120,18 @@ export function useRem(options: UseRemOptions = {}): {
 } {
   const baseWidth = options.baseWidth ?? DEFAULT_BASE_WIDTH
   const baseSize = options.baseSize ?? DEFAULT_BASE_SIZE
+  const minFontSize = options.minFontSize ?? 12
+  const maxFontSize = options.maxFontSize ?? 20
 
   useEffect(() => {
     const setRem = () => {
-      // 获取当前视窗宽度
       const width =
         document.documentElement.clientWidth || (window as Window).innerWidth
-      // 计算当前 rem 基准值
       const fontScale = width / baseWidth
-      // 限制最大最小缩放
-      const fontSize = Math.min(Math.max(fontScale * baseSize, 12), 20)
-
+      const fontSize = Math.min(
+        Math.max(fontScale * baseSize, minFontSize),
+        maxFontSize
+      )
       document.documentElement.style.fontSize = `${fontSize}px`
     }
 
@@ -136,7 +145,7 @@ export function useRem(options: UseRemOptions = {}): {
     return () => {
       ;(window as Window).removeEventListener('resize', setRem)
     }
-  }, [baseWidth, baseSize])
+  }, [baseWidth, baseSize, minFontSize, maxFontSize])
 
   return {
     // 使用闭包捕获当前的 baseSize 值
