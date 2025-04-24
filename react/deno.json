@@ -1,6 +1,6 @@
 {
   "name": "@aiho/react",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "React utility hooks and components for enterprise applications",
   "exports": {
     "./hooks": "./src/hooks/mod.ts"

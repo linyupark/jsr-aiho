@@ -77,3 +77,6 @@ export type {
 
 export { useDevice } from './use-device.ts'
 export type { DeviceType, UseDeviceOptions } from './use-device.ts'
+
+export { useWXSDK, getSearchParam } from './use-wxsdk.ts'
+export type { WXSDKConfig, WXSDKResponse } from './use-wxsdk.ts'

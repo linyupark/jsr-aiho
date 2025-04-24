@@ -9,6 +9,27 @@
 - **🔧 维护**：代码维护和优化
 
 <details open>
+<summary><strong>0.1.4</strong></summary>
+
+## ✨ 新功能
+
+### ✨ 新增微信 JSSDK 集成 hook
+- 新增 `useWXSDK` hook，用于在 React 应用中集成微信 JSSDK 功能
+- 支持微信 JSSDK 的初始化、登录、登出等功能
+- 提供完整的状态管理，包括就绪状态、登录状态、错误处理等
+- 支持自定义配置，如 appId、接口列表、调试模式等
+- 导出了新的类型和接口：`WXSDKConfig` 和 `WXSDKResponse`
+- 添加了详细的 JSDoc 文档和使用示例
+
+## 📝 文档
+
+### 📝 文档更新
+- 更新 README.md，添加了各个 hooks 的使用示例代码
+- 为 `useWXSDK` hook 添加了详细的 JSDoc 文档
+- 完善了类型定义的文档注释
+</details>
+
+<details>
 <summary><strong>0.1.3</strong></summary>
 
 ## 📝 文档
