@@ -56,15 +56,105 @@ import { useState, useEffect } from 'react'
 
 /**
  * 设备类型枚举
+ *
+ * 该类型用于表示设备的类型，基于用户代理（User Agent）检测。
+ * 在响应式设计中，可以根据设备类型提供不同的交互体验。
+ *
+ * @example
+ * ```ts
+ * import { useDevice, type DeviceType } from "@aiho/react/hooks";
+ *
+ * function DeviceSpecificFeature() {
+ *   const { deviceType } = useDevice();
+ *
+ *   // 根据设备类型渲染不同的组件
+ *   if (deviceType === 'mobile') {
+ *     return <div>移动设备优化界面</div>;
+ *   } else {
+ *     return <div>桌面设备优化界面</div>;
+ *   }
+ * }
+ * ```
  */
 export type DeviceType = 'mobile' | 'desktop'
 
 /**
  * useDevice hook 的配置选项
+ *
+ * 该接口定义了 useDevice hook 的配置参数，允许自定义设备检测的行为。
+ * 通过这些选项，可以根据项目需求调整移动设备的断点宽度。
+ *
+ * @example 基本用法
+ * ```ts
+ * import { useDevice } from "@aiho/react/hooks";
+ *
+ * // 使用默认配置（移动设备断点为 768px）
+ * function App() {
+ *   const { isMobile } = useDevice();
+ *   return <div>{isMobile ? '移动版' : '桌面版'}</div>;
+ * }
+ * ```
+ *
+ * @example 自定义断点
+ * ```ts
+ * import { useDevice } from "@aiho/react/hooks";
+ *
+ * // 自定义移动设备断点为 640px（适合小屏幕优先的设计）
+ * function App() {
+ *   const { isMobile } = useDevice({ mobileBreakpoint: 640 });
+ *
+ *   // 根据屏幕尺寸应用不同的样式类
+ *   const layoutClass = isMobile ? 'mobile-layout' : 'desktop-layout';
+ *
+ *   return (
+ *     <div className={layoutClass}>
+ *       {isMobile ? '小屏幕布局' : '大屏幕布局'}
+ *     </div>
+ *   );
+ * }
+ * ```
+ *
+ * @example 与 CSS 媒体查询结合
+ * ```ts
+ * import { useDevice } from "@aiho/react/hooks";
+ *
+ * // 确保 JS 和 CSS 使用相同的断点
+ * const BREAKPOINTS = {
+ *   mobile: 576,
+ *   tablet: 768,
+ *   desktop: 992,
+ *   largeDesktop: 1200
+ * };
+ *
+ * function ResponsiveLayout() {
+ *   // 使用与 CSS 相同的断点
+ *   const { isMobile } = useDevice({
+ *     mobileBreakpoint: BREAKPOINTS.tablet
+ *   });
+ *
+ *   // 在 CSS 中可以使用相同的断点:
+ *   // @media (max-width: 768px) { ... }
+ *
+ *   return (
+ *     <div>
+ *       {isMobile ? '移动导航' : '桌面导航'}
+ *     </div>
+ *   );
+ * }
+ * ```
  */
 export interface UseDeviceOptions {
   /**
    * 移动设备断点宽度，默认为 768px
+   *
+   * 当屏幕宽度小于或等于此值时，`isMobile` 属性将为 true。
+   * 这个值应该与您的 CSS 媒体查询断点保持一致，以确保 JS 和 CSS 的行为一致。
+   *
+   * 常见的断点值：
+   * - 576px: 小型移动设备（竖屏手机）
+   * - 768px: 平板设备和大型手机（横屏）
+   * - 992px: 小型桌面显示器
+   * - 1200px: 大型桌面显示器
    */
   mobileBreakpoint?: number
 }

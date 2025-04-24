@@ -58,38 +58,192 @@ import { useState, useEffect, useMemo } from 'react'
 
 /**
  * 安全区域接口
+ *
+ * 该接口定义了设备安全区域的尺寸信息，包括顶部、右侧、底部和左侧的安全区域大小。
+ * 安全区域是指设备屏幕上不被刘海、圆角、底部操作条等遮挡的可视区域。
+ *
+ * @example
+ * ```ts
+ * import { useSafeArea, type SafeArea } from "@aiho/react/hooks";
+ *
+ * function SafeAreaAwareComponent() {
+ *   const safeArea = useSafeArea();
+ *
+ *   // 使用安全区域信息设置内边距
+ *   const containerStyle = {
+ *     paddingTop: `${safeArea.top}px`,
+ *     paddingRight: `${safeArea.right}px`,
+ *     paddingBottom: `${safeArea.bottom}px`,
+ *     paddingLeft: `${safeArea.left}px`
+ *   };
+ *
+ *   return <div style={containerStyle}>内容将避开安全区域</div>;
+ * }
+ * ```
+ *
+ * @example 仅使用底部安全区域
+ * ```ts
+ * import { useSafeArea } from "@aiho/react/hooks";
+ *
+ * function BottomNavigation() {
+ *   const { bottom } = useSafeArea();
+ *
+ *   return (
+ *     <nav style={{
+ *       position: 'fixed',
+ *       bottom: 0,
+ *       left: 0,
+ *       right: 0,
+ *       paddingBottom: `${bottom}px`
+ *     }}>
+ *       底部导航栏（避开底部安全区域）
+ *     </nav>
+ *   );
+ * }
+ * ```
  */
 export interface SafeArea {
-  /** 顶部安全区域高度（像素） */
+  /**
+   * 顶部安全区域高度（像素）
+   *
+   * 在 iOS 设备上，这通常对应于顶部刘海或状态栏的高度。
+   * 在没有刘海的设备上，这个值通常为 0。
+   */
   top: number
-  /** 右侧安全区域宽度（像素） */
+
+  /**
+   * 右侧安全区域宽度（像素）
+   *
+   * 在某些设备上，屏幕右侧可能有圆角或缺口，这个值表示右侧需要避开的区域宽度。
+   * 在大多数设备上，这个值通常为 0。
+   */
   right: number
-  /** 底部安全区域高度（像素） */
+
+  /**
+   * 底部安全区域高度（像素）
+   *
+   * 在 iOS 设备上，这通常对应于底部操作条（Home Indicator）的高度。
+   * 在 Android 设备上，这可能对应于导航栏的高度。
+   * 这个值在全面屏手机上尤为重要。
+   */
   bottom: number
-  /** 左侧安全区域宽度（像素） */
+
+  /**
+   * 左侧安全区域宽度（像素）
+   *
+   * 在某些设备上，屏幕左侧可能有圆角或缺口，这个值表示左侧需要避开的区域宽度。
+   * 在大多数设备上，这个值通常为 0。
+   */
   left: number
 }
 
 /**
  * CSS 变量名称接口
+ *
+ * 该接口定义了安全区域相关的 CSS 变量名称。
+ * 这些 CSS 变量将被设置在 HTML 根元素上，可以在 CSS 中直接使用。
+ *
+ * @example 在 CSS 中使用安全区域变量
+ * ```css
+ * .safe-container {
+ *   padding-top: var(--sat, 0px);
+ *   padding-right: var(--sar, 0px);
+ *   padding-bottom: var(--sab, 0px);
+ *   padding-left: var(--sal, 0px);
+ * }
+ *
+ * .bottom-nav {
+ *   position: fixed;
+ *   bottom: 0;
+ *   left: 0;
+ *   right: 0;
+ *   padding-bottom: var(--sab, 0px);
+ * }
+ * ```
+ *
+ * @example 自定义 CSS 变量名
+ * ```ts
+ * import { useSafeArea } from "@aiho/react/hooks";
+ *
+ * // 使用自定义 CSS 变量名
+ * useSafeArea({
+ *   cssVarNames: {
+ *     top: '--safe-area-top',
+ *     bottom: '--safe-area-bottom'
+ *   }
+ * });
+ *
+ * // 然后在 CSS 中使用自定义变量名
+ * // .container { padding-top: var(--safe-area-top, 0px); }
+ * ```
  */
 export interface CssVarNames {
-  /** 顶部安全区域 CSS 变量名 */
+  /**
+   * 顶部安全区域 CSS 变量名
+   *
+   * 默认值为 '--sat'，可以在 CSS 中通过 var(--sat) 使用。
+   * 这个变量存储的是顶部安全区域的高度（像素）。
+   */
   top: string
-  /** 右侧安全区域 CSS 变量名 */
+
+  /**
+   * 右侧安全区域 CSS 变量名
+   *
+   * 默认值为 '--sar'，可以在 CSS 中通过 var(--sar) 使用。
+   * 这个变量存储的是右侧安全区域的宽度（像素）。
+   */
   right: string
-  /** 底部安全区域 CSS 变量名 */
+
+  /**
+   * 底部安全区域 CSS 变量名
+   *
+   * 默认值为 '--sab'，可以在 CSS 中通过 var(--sab) 使用。
+   * 这个变量存储的是底部安全区域的高度（像素）。
+   * 在全面屏手机上，这个值通常对应于底部操作条的高度。
+   */
   bottom: string
-  /** 左侧安全区域 CSS 变量名 */
+
+  /**
+   * 左侧安全区域 CSS 变量名
+   *
+   * 默认值为 '--sal'，可以在 CSS 中通过 var(--sal) 使用。
+   * 这个变量存储的是左侧安全区域的宽度（像素）。
+   */
   left: string
 }
 
 /**
  * useSafeArea hook 的配置选项
+ *
+ * 该接口定义了 useSafeArea hook 的配置参数，允许自定义 CSS 变量名称。
+ *
+ * @example
+ * ```ts
+ * import { useSafeArea } from "@aiho/react/hooks";
+ *
+ * // 使用自定义 CSS 变量名
+ * const safeArea = useSafeArea({
+ *   cssVarNames: {
+ *     top: '--safe-top',
+ *     right: '--safe-right',
+ *     bottom: '--safe-bottom',
+ *     left: '--safe-left'
+ *   }
+ * });
+ * ```
  */
 export interface UseSafeAreaOptions {
   /**
    * CSS 变量名称配置
+   *
+   * 可以自定义安全区域相关的 CSS 变量名称。
+   * 只需要提供要自定义的变量名，未提供的将使用默认值。
+   *
+   * 默认值：
+   * - top: '--sat'
+   * - right: '--sar'
+   * - bottom: '--sab'
+   * - left: '--sal'
    */
   cssVarNames?: Partial<CssVarNames>
 }

@@ -8,8 +8,37 @@
 - **📝 文档**：文档更新
 - **🔧 维护**：代码维护和优化
 
-
 <details open>
+<summary><strong>0.1.3</strong></summary>
+
+## 📝 文档
+
+### 📝 JSR 文档规范兼容性提升
+- 完善了所有导出符号的 JSDoc 文档，提高文档覆盖率至 80% 以上
+- 为 `px2rem` 和 `rem2px` 函数添加了详细的文档和多个使用场景示例
+- 为 `useRem` hook 添加了更详细的工作原理、参数说明和使用示例
+- 为 `DeviceType` 和 `UseDeviceOptions` 类型添加了详细的文档和使用示例
+- 为 `SafeArea` 和 `CssVarNames` 接口添加了详细的属性说明和使用示例
+- 为所有 hooks 添加了高级使用场景的示例代码
+- 优化了示例代码的格式，确保与 TypeScript 编译器兼容
+
+### 📝 API 文档增强
+- 添加了更多实际应用场景的示例代码
+- 为每个接口属性添加了详细的说明和用途解释
+- 增加了与 CSS 结合使用的示例
+- 添加了组件库开发中使用 hooks 的示例
+- 完善了参数和返回值的类型说明
+
+## 🔧 维护
+
+### 🔧 代码质量提升
+- 修复了 JSDoc 示例中的 TypeScript 类型错误
+- 统一了文档风格和格式
+- 优化了代码注释的可读性
+</details>
+
+
+<details>
 <summary><strong>0.1.2</strong></summary>
 
 ## 🔥 增强
