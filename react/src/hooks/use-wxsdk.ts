@@ -63,24 +63,21 @@ import { useEffect, useState, useCallback } from 'react'
  */
 
 // 添加微信 JSSDK 的类型声明
-declare global {
-  interface Window {
-    wx: {
-      config: (config: {
-        debug: boolean
-        appId: string
-        timestamp: number | string
-        nonceStr: string
-        signature: string
-        jsApiList: string[]
-      }) => void
-      ready: (callback: () => void) => void
-      error: (callback: (res: { errMsg: string }) => void) => void
-      // 可以根据需要添加更多的微信 JSSDK 方法
-      // deno-lint-ignore no-explicit-any
-      [key: string]: any
-    }
-  }
+// 注意：避免使用 global 扩展，而是使用模块内部类型
+export interface WXInstance {
+  config: (config: {
+    debug: boolean
+    appId: string
+    timestamp: number | string
+    nonceStr: string
+    signature: string
+    jsApiList: string[]
+  }) => void
+  ready: (callback: () => void) => void
+  error: (callback: (res: { errMsg: string }) => void) => void
+  // 可以根据需要添加更多的微信 JSSDK 方法
+  // deno-lint-ignore no-explicit-any
+  [key: string]: any
 }
 
 /**
@@ -328,7 +325,7 @@ export const useWXSDK = ({
 
   // 加载微信 JSSDK
   const loadSDK = useCallback((): Promise<void> => {
-    if ((window as Window).wx) {
+    if ((window as unknown as { wx?: WXInstance }).wx) {
       return Promise.resolve()
     }
 
@@ -375,7 +372,7 @@ export const useWXSDK = ({
         throw new Error('Failed to get signature data')
       }
 
-      ;(window as Window).wx.config({
+      ;(window as unknown as { wx: WXInstance }).wx.config({
         debug,
         appId,
         timestamp: signatureData.timestamp,
@@ -383,13 +380,13 @@ export const useWXSDK = ({
         signature: signatureData.signature,
         jsApiList: signatureData.jsApiList
       })
-      ;(window as Window).wx.ready(() => {
+      ;(window as unknown as { wx: WXInstance }).wx.ready(() => {
         setIsReady(true)
         onReady?.()
         setError(null)
       })
       // deno-lint-ignore no-explicit-any
-      ;(window as Window).wx.error((res: any) => {
+      ;(window as unknown as { wx: WXInstance }).wx.error((res: any) => {
         setError(new Error(res.errMsg))
       })
     } catch (err) {

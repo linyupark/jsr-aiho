@@ -27,6 +27,13 @@
 - 更新 README.md，添加了各个 hooks 的使用示例代码
 - 为 `useWXSDK` hook 添加了详细的 JSDoc 文档
 - 完善了类型定义的文档注释
+
+## 🔧 维护
+
+### 🔧 类型定义优化
+- 优化了 `useWXSDK` 的类型定义，避免使用全局类型扩展
+- 修复了 JSR 类型检查的兼容性问题
+- 导出了 `WXInstance` 类型，便于用户扩展微信 SDK 功能
 </details>
 
 <details>
