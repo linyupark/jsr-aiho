@@ -1,13 +1,14 @@
 {
   "name": "@aiho/react",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "description": "React utility hooks and components for enterprise applications",
   "exports": {
     "./hooks": "./src/hooks/mod.ts"
   },
   "imports": {
     "react": "npm:react@^19",
-    "react-dom": "npm:react-dom@^19"
+    "react-dom": "npm:react-dom@^19",
+    "swr": "npm:swr@^2.2.5"
   },
   "publish": {
     "include": [
@@ -20,7 +21,8 @@
   },
   "dependencies": {
     "react": "^19",
-    "react-dom": "^19"
+    "react-dom": "^19",
+    "swr": "^2.2.5"
   },
   "compilerOptions": {
     "lib": ["deno.ns", "dom", "dom.iterable", "esnext"]
@@ -34,7 +36,13 @@
     "rem",
     "safe-area",
     "resource-loader",
-    "preload"
+    "preload",
+    "swr",
+    "data-fetching",
+    "fetch",
+    "http-client",
+    "timeout",
+    "abort"
   ],
   "license": "MIT"
 }

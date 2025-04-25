@@ -96,3 +96,21 @@ export type {
   UseResourceLoaderOptions,
   ResourceLoaderState
 } from './use-resource-loader.ts'
+
+export { useSwrEnhanced } from './use-swr-enhanced.ts'
+export type {
+  UseSwrEnhancedOptions,
+  UseSwrEnhancedResponse,
+  DataType,
+  ErrorType,
+  MutationArgType
+} from './use-swr-enhanced.ts'
+
+export { useFetchEnhanced } from './use-fetch-enhanced.ts'
+export type {
+  UseFetchEnhancedOptions,
+  UseFetchEnhancedResponse,
+  HttpMethod,
+  HttpError,
+  TimeoutError
+} from './use-fetch-enhanced.ts'

@@ -8,6 +8,8 @@ React utility hooks and components for enterprise applications
 - **设备检测**：检测设备类型和屏幕尺寸，支持响应式布局
 - **安全区域处理**：自动设置安全区域相关的 CSS 变量
 - **资源预加载**：支持并行加载大量资源（图片等），提供加载进度监控
+- **数据请求增强**：基于 SWR 的增强版数据请求 hook，支持手动触发和灵活控制
+- **网络请求增强**：增强版 fetch hook，支持中断请求、超时设置、错误处理等
 - **高度可配置**：所有 hooks 都支持自定义配置，使其更加灵活
 
 ## 主要模块
@@ -18,6 +20,8 @@ React utility hooks and components for enterprise applications
   - `useDevice`：设备检测 hook
   - `useWXSDK`：微信 JSSDK 集成 hook
   - `useResourceLoader`：资源预加载 hook
+  - `useSwrEnhanced`：增强版 SWR 数据请求 hook
+  - `useFetchEnhanced`：增强版 fetch hook，支持中断请求、超时设置等
 
 ## API 文档
 
@@ -148,6 +152,108 @@ function LoadingScreen() {
         {isComplete ? '加载完成' : `加载中... ${Math.floor(progress)}%`}
       </div>
     </div>
+  );
+}
+```
+
+### useSwrEnhanced
+
+```tsx
+import { useSwrEnhanced } from '@aiho/react/hooks';
+
+function UserProfile() {
+  const {
+    data,
+    error,
+    isLoading,
+    isValidating,
+    trigger
+  } = useSwrEnhanced('/api/user', {
+    autoFetch: true, // 默认为 true，组件挂载时自动请求
+    fetcher: (url) => fetch(url).then(res => res.json())
+  });
+
+  if (isLoading) return <div>加载中...</div>;
+  if (error) return <div>加载失败: {error.message}</div>;
+
+  return (
+    <div>
+      <h1>{data.name}</h1>
+      <button
+        onClick={() => trigger()}
+        disabled={isValidating}
+      >
+        {isValidating ? '刷新中...' : '手动刷新'}
+      </button>
+    </div>
+  );
+}
+```
+
+### useFetchEnhanced
+
+```tsx
+import { useFetchEnhanced, useSwrEnhanced } from '@aiho/react/hooks';
+
+// 创建增强版的 fetch
+const { fetch: enhancedFetch } = useFetchEnhanced({
+  baseURL: 'https://api.example.com',
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 5000, // 5秒超时
+  throwHttpErrors: true, // 自动处理 HTTP 错误状态码
+  retry: { count: 3, delay: 1000 } // 失败重试3次
+});
+
+// 在 SWR 中使用
+function UserList() {
+  const { data, error, isLoading } = useSwrEnhanced('/users', {
+    fetcher: (url) => enhancedFetch(url)
+  });
+
+  if (isLoading) return <div>加载中...</div>;
+  if (error) return <div>加载失败: {error.message}</div>;
+
+  return (
+    <ul>
+      {data.map(user => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+
+// POST 请求示例
+function CreateUser() {
+  const { fetch: enhancedFetch } = useFetchEnhanced({
+    baseURL: 'https://api.example.com',
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const userData = {
+      name: form.name.value,
+      email: form.email.value
+    };
+
+    try {
+      const result = await enhancedFetch('/users', {
+        method: 'POST',
+        body: JSON.stringify(userData)
+      });
+      console.log('用户创建成功:', result);
+    } catch (err) {
+      console.error('创建失败:', err.message);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="name" placeholder="姓名" required />
+      <input name="email" type="email" placeholder="邮箱" required />
+      <button type="submit">创建用户</button>
+    </form>
   );
 }
 ```

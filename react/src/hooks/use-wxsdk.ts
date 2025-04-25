@@ -243,6 +243,33 @@ interface WXResponseData {
 }
 
 /**
+ * 微信认证响应接口
+ *
+ * 定义了微信认证接口返回的数据结构
+ */
+export interface WXAuthResponse {
+  /**
+   * 状态码，0 表示成功
+   */
+  code: number
+
+  /**
+   * 认证成功后返回的 token
+   */
+  token?: string
+
+  /**
+   * 错误信息
+   */
+  message?: string
+
+  /**
+   * 其他可能的字段
+   */
+  [key: string]: unknown
+}
+
+/**
  * useWXSDK hook 返回的对象类型
  *
  * 该接口定义了 useWXSDK hook 返回的状态和方法
@@ -312,9 +339,9 @@ export interface WXSDKResponse {
    * 如果 URL 中没有 code 参数，会跳转到微信授权页面
    * 如果有 code 参数，会调用 authUrl 接口获取 token
    *
-   * @returns Promise<string | null> 成功时返回 token，失败时返回 null
+   * @returns Promise<WXAuthResponse | null> 成功时返回完整的认证响应数据，失败时返回 null
    */
-  login: () => Promise<string | null>
+  login: () => Promise<WXAuthResponse | null>
 
   /**
    * 登出
@@ -450,18 +477,8 @@ export const useWXSDK = ({
     }
   }
 
-  /**
-   * 微信认证响应接口
-   */
-  interface WXAuthResponse {
-    code: number
-    token?: string
-    message?: string
-    [key: string]: unknown
-  }
-
   // 登录方法
-  const login = async (): Promise<string | null> => {
+  const login = async (): Promise<WXAuthResponse | null> => {
     try {
       // 确保在浏览器环境中运行
       if (typeof globalThis.location === 'undefined') {
@@ -493,7 +510,8 @@ export const useWXSDK = ({
           history.replaceState({}, '', newUrl)
         }
 
-        return data.token
+        // 返回完整的响应数据，而不仅仅是 token
+        return data
       }
 
       throw new Error(data.message || 'Login failed')

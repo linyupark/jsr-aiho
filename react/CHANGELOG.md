@@ -9,6 +9,65 @@
 - **🔧 维护**：代码维护和优化
 
 <details open>
+<summary><strong>0.1.7</strong></summary>
+
+## ✨ 新功能
+
+### ✨ 新增增强版 fetch hook
+- 新增 `useFetchEnhanced` hook，提供更灵活的网络请求控制
+- 支持中断请求、设置超时时间、自定义 header 以及错误处理等功能
+- 支持请求重试、请求前后钩子函数、自动解析 JSON 响应等
+- 提供完整的错误处理机制，包括 HTTP 错误、超时错误等
+- 支持与 SWR 无缝集成，作为 fetcher 函数使用
+- 导出了新的类型和接口：`UseFetchEnhancedOptions`、`UseFetchEnhancedResponse` 等
+- 添加了详细的 JSDoc 文档和多种使用场景的示例
+
+## 🔥 增强
+
+### 🔥 增强版 SWR hook 优化
+- 简化了 `useSwrEnhanced` hook 的实现，移除了不常用的无限加载功能
+- 优化了类型定义，使用更具体的类型代替 `any`
+- 改进了与 `useFetchEnhanced` 的集成，提供更完整的数据请求解决方案
+- 添加了 POST 请求的使用示例
+
+## 📝 文档
+
+### 📝 文档更新
+- 更新 README.md，添加了 `useFetchEnhanced` hook 的使用示例
+- 为 `useFetchEnhanced` hook 添加了详细的 JSDoc 文档
+- 更新了 `useSwrEnhanced` hook 的文档和示例代码
+- 完善了类型定义的文档注释
+</details>
+
+<details>
+<summary><strong>0.1.6</strong></summary>
+
+## ✨ 新功能
+
+### ✨ 新增增强版 SWR hook
+- 新增 `useSwrEnhanced` hook，基于 SWR 库提供更灵活的数据请求控制
+- 支持手动触发请求和控制自动请求的功能
+- 根据使用场景自动选择 `useSWR` 或 `useSWRInfinite`
+- 提供完整的状态管理，包括加载状态、验证状态、错误处理等
+- 支持无限加载模式，适用于分页列表和无限滚动场景
+- 支持自定义配置，如自动请求、回退数据、重新验证等
+- 导出了新的类型和接口：`UseSwrEnhancedOptions` 和 `UseSwrEnhancedResponse`
+- 添加了详细的 JSDoc 文档和多种使用场景的示例
+
+## 📝 文档
+
+### 📝 文档更新
+- 更新 README.md，添加了 `useSwrEnhanced` hook 的使用示例
+- 为 `useSwrEnhanced` hook 添加了详细的 JSDoc 文档
+- 完善了类型定义的文档注释
+
+## 🔧 维护
+
+### 🔧 依赖更新
+- 添加了 SWR 库作为依赖，版本为 2.2.5
+</details>
+
+<details>
 <summary><strong>0.1.5</strong></summary>
 
 ## ✨ 新功能
