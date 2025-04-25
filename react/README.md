@@ -102,16 +102,25 @@ function WeChatApp() {
     authUrl: '/api/wx/auth'
   });
 
-  if (loading) return <div>加载中...</div>;
+  // loading 为 undefined 表示尚未开始初始化，为 true 表示正在加载中
+  if (loading === true) return <div>加载中...</div>;
   if (error) return <div>错误: {error.message}</div>;
 
   return (
     <div>
-      <p>JSSDK 状态: {isReady ? '已就绪' : '未就绪'}</p>
-      <p>登录状态: {isLoggedIn ? '已登录' : '未登录'}</p>
-      {!isReady && <button onClick={init}>初始化 JSSDK</button>}
-      {isReady && !isLoggedIn && <button onClick={login}>微信登录</button>}
-      {isLoggedIn && <button onClick={logout}>退出登录</button>}
+      {/* isReady 为 undefined 表示尚未开始初始化，需要明确判断 */}
+      <p>JSSDK 状态: {isReady === true ? '已就绪' : isReady === false ? '初始化失败' : '未初始化'}</p>
+
+      {/* isLoggedIn 为 undefined 表示尚未验证登录状态，需要明确判断 */}
+      <p>登录状态: {isLoggedIn === true ? '已登录' : isLoggedIn === false ? '未登录' : '未验证'}</p>
+
+      {/* 根据不同状态显示不同按钮 */}
+      {isReady !== true && <button onClick={init}>
+        {loading === true ? '初始化中...' : '初始化 JSSDK'}
+      </button>}
+
+      {isReady === true && isLoggedIn !== true && <button onClick={login}>微信登录</button>}
+      {isLoggedIn === true && <button onClick={logout}>退出登录</button>}
     </div>
   );
 }
@@ -265,3 +274,10 @@ MIT
 ## 更新日志 (CHANGELOG)
 
 查看完整的[更新日志](./react/CHANGELOG.md)了解所有版本的变更详情。
+
+
+
+
+
+
+

@@ -16,18 +16,30 @@ import { useEffect, useState, useCallback } from 'react'
  *     authUrl: '/api/wx/auth'
  *   });
  *
- *   if (loading) return <div>加载中...</div>;
- *   if (error) return <div>错误: {error.message}</div>;
+ *   // loading 为 undefined 表示尚未开始初始化，为 true 表示正在加载中
+ *   if (loading === true) return "加载中...";
+ *   if (error) return "错误: " + error.message;
  *
- *   return (
- *     <div>
- *       <p>JSSDK 状态: {isReady ? '已就绪' : '未就绪'}</p>
- *       <p>登录状态: {isLoggedIn ? '已登录' : '未登录'}</p>
- *       {!isReady && <button onClick={init}>初始化 JSSDK</button>}
- *       {isReady && !isLoggedIn && <button onClick={login}>微信登录</button>}
- *       {isLoggedIn && <button onClick={logout}>退出登录</button>}
- *     </div>
- *   );
+ *   // isReady 为 undefined 表示尚未开始初始化，需要明确判断
+ *   const readyStatus = isReady === true ? '已就绪' : isReady === false ? '初始化失败' : '未初始化';
+ *
+ *   // isLoggedIn 为 undefined 表示尚未验证登录状态，需要明确判断
+ *   const loginStatus = isLoggedIn === true ? '已登录' : isLoggedIn === false ? '未登录' : '未验证';
+ *
+ *   // 根据不同状态显示不同按钮
+ *   const initButton = isReady !== true ?
+ *     (loading === true ? '初始化中...' : '初始化 JSSDK') : '';
+ *
+ *   const loginButton = isReady === true && isLoggedIn !== true ? '微信登录' : '';
+ *   const logoutButton = isLoggedIn === true ? '退出登录' : '';
+ *
+ *   return `
+ *     JSSDK 状态: ${readyStatus}
+ *     登录状态: ${loginStatus}
+ *     ${initButton ? `初始化按钮: ${initButton}` : ''}
+ *     ${loginButton ? `登录按钮: ${loginButton}` : ''}
+ *     ${logoutButton ? `登出按钮: ${logoutButton}` : ''}
+ *   `;
  * }
  * ```
  *
@@ -50,12 +62,12 @@ import { useEffect, useState, useCallback } from 'react'
  *   // 使用解构获取所需的状态和方法
  *   const { isReady, init } = wxSDK;
  *
- *   return (
- *     <div>
- *       {!isReady && <button onClick={init}>手动初始化 JSSDK</button>}
- *       {isReady && <div>JSSDK 已就绪，可以使用微信 API</div>}
- *     </div>
- *   );
+ *   // 根据状态返回不同的内容
+ *   if (!isReady) {
+ *     return "需要手动初始化 JSSDK";
+ *   } else {
+ *     return "JSSDK 已就绪，可以使用微信 API";
+ *   }
  * }
  * ```
  *
@@ -301,13 +313,15 @@ export interface WXAuthResponse {
 export interface WXSDKResponse {
   /**
    * JSSDK 是否已就绪
+   * undefined 表示初始状态，尚未开始初始化
    */
-  isReady: boolean
+  isReady: boolean | undefined
 
   /**
    * 用户是否已登录
+   * undefined 表示初始状态，尚未验证登录状态
    */
-  isLoggedIn: boolean
+  isLoggedIn: boolean | undefined
 
   /**
    * 用户登录 token，未登录时为 null
@@ -321,8 +335,9 @@ export interface WXSDKResponse {
 
   /**
    * 加载状态
+   * undefined 表示初始状态，尚未开始加载
    */
-  loading: boolean
+  loading: boolean | undefined
 
   /**
    * 初始化 JSSDK
@@ -366,11 +381,11 @@ export const useWXSDK = ({
   autoInit = true,
   onReady
 }: WXSDKConfig): WXSDKResponse => {
-  const [isReady, setIsReady] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isReady, setIsReady] = useState<boolean | undefined>(undefined)
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | undefined>(undefined)
   const [token, setToken] = useState<string | null>(null)
   const [error, setError] = useState<Error | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState<boolean | undefined>(undefined)
 
   const code = getSearchParam('code')
 
@@ -436,7 +451,11 @@ export const useWXSDK = ({
   // 初始化 SDK
   const init = async (): Promise<void> => {
     try {
+      // 开始初始化，设置loading为true
       setLoading(true)
+      // 明确设置初始状态为false，表示正在初始化但尚未就绪
+      setIsReady(false)
+
       await loadSDK()
       const signatureData = await getSignature()
 
@@ -460,19 +479,25 @@ export const useWXSDK = ({
       })
 
       win.wx.ready(() => {
+        // 初始化成功，设置为就绪状态
         setIsReady(true)
         onReady?.()
         setError(null)
       })
 
       win.wx.error((res: WXErrorResponse) => {
+        // 初始化失败，设置错误并确保isReady为false
         setError(new Error(res.errMsg))
+        setIsReady(false)
       })
     } catch (err) {
+      // 初始化过程中出错，设置错误并确保isReady为false
       setError(
         err instanceof Error ? err : new Error('Failed to initialize JSSDK')
       )
+      setIsReady(false)
     } finally {
+      // 无论成功失败，初始化过程结束，loading设为false
       setLoading(false)
     }
   }
@@ -480,6 +505,10 @@ export const useWXSDK = ({
   // 登录方法
   const login = async (): Promise<WXAuthResponse | null> => {
     try {
+      // 设置登录状态为正在处理
+      setLoading(true)
+      setIsLoggedIn(false)
+
       // 确保在浏览器环境中运行
       if (typeof globalThis.location === 'undefined') {
         throw new Error('Location is not available in this environment')
@@ -500,6 +529,7 @@ export const useWXSDK = ({
           localStorage.setItem(tokenKey, data.token)
         }
         setToken(data.token)
+        // 明确设置登录状态为true
         setIsLoggedIn(true)
 
         // 清除URL中的code参数
@@ -517,7 +547,12 @@ export const useWXSDK = ({
       throw new Error(data.message || 'Login failed')
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Login failed'))
+      // 登录失败，明确设置登录状态为false
+      setIsLoggedIn(false)
       return null
+    } finally {
+      // 无论成功失败，登录过程结束，loading设为false
+      setLoading(false)
     }
   }
 
@@ -527,25 +562,36 @@ export const useWXSDK = ({
       localStorage.removeItem(tokenKey)
     }
     setToken(null)
+    // 明确设置登录状态为false
     setIsLoggedIn(false)
   }
 
   // 初始化效果
   useEffect(() => {
-    // 检查本地存储的token
-    if (typeof localStorage !== 'undefined') {
-      const storedToken = localStorage.getItem(tokenKey)
-      if (storedToken) {
-        setToken(storedToken)
-        setIsLoggedIn(true)
-      }
+    const storedToken = localStorage.getItem(tokenKey)
+    if (storedToken) {
+      setToken(storedToken)
+      // 有token时明确设置登录状态为true
+      setIsLoggedIn(true)
+    } else {
+      // 无token时明确设置登录状态为false
+      setIsLoggedIn(false)
     }
 
     // 自动初始化
     if (autoInit) {
+      // 初始化前设置loading为undefined，表示尚未开始初始化
+      setLoading(undefined)
+      // 初始化前设置isReady为undefined，表示尚未开始初始化
+      setIsReady(undefined)
+
       init().catch((error) => {
         console.error('Failed to initialize WeChat JSSDK:', error)
       })
+    } else {
+      // 不自动初始化时，明确设置状态
+      setLoading(false)
+      setIsReady(false)
     }
   }, [])
 

@@ -9,6 +9,26 @@
 - **🔧 维护**：代码维护和优化
 
 <details open>
+<summary><strong>0.1.8</strong></summary>
+
+## 🔥 增强
+
+### 🔥 useWXSDK hook 状态管理优化
+- 改进了 `useWXSDK` hook 的状态变量类型，将 `isReady`、`isLoggedIn` 和 `loading` 的类型从 `boolean` 改为 `boolean | undefined`
+- 初始状态值从 `false` 改为 `undefined`，更准确地表示初始化过程中的各种状态
+- 优化了状态转换逻辑，明确区分未初始化、初始化中、初始化成功和初始化失败等状态
+- 改进了登录状态管理，更清晰地区分未验证、已登录和未登录状态
+- 更新了 JSDoc 文档，详细说明了各个状态的含义和使用方法
+
+## 📝 文档
+
+### 📝 文档更新
+- 更新了 README 中的 `useWXSDK` 使用示例，展示如何正确处理 `undefined` 状态
+- 添加了状态判断的最佳实践，使用严格比较（`===`）代替松散比较（`==`）
+- 完善了类型定义的文档注释，说明了 `undefined` 状态的含义
+</details>
+
+<details>
 <summary><strong>0.1.7</strong></summary>
 
 ## ✨ 新功能
