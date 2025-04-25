@@ -64,20 +64,43 @@ import { useEffect, useState, useCallback } from 'react'
 
 // 添加微信 JSSDK 的类型声明
 // 注意：避免使用 global 扩展，而是使用模块内部类型
+
+/**
+ * 微信 JSSDK 配置参数接口
+ */
+export interface WXConfig {
+  debug: boolean
+  appId: string
+  timestamp: number | string
+  nonceStr: string
+  signature: string
+  jsApiList: string[]
+}
+
+/**
+ * 微信 JSSDK 错误响应接口
+ */
+export interface WXErrorResponse {
+  errMsg: string
+}
+
+/**
+ * 微信 JSSDK 实例接口
+ *
+ * 定义了微信 JSSDK 的核心方法和属性
+ */
 export interface WXInstance {
-  config: (config: {
-    debug: boolean
-    appId: string
-    timestamp: number | string
-    nonceStr: string
-    signature: string
-    jsApiList: string[]
-  }) => void
+  config: (config: WXConfig) => void
   ready: (callback: () => void) => void
-  error: (callback: (res: { errMsg: string }) => void) => void
-  // 可以根据需要添加更多的微信 JSSDK 方法
-  // deno-lint-ignore no-explicit-any
-  [key: string]: any
+  error: (callback: (res: WXErrorResponse) => void) => void
+
+  // 常用的微信 JSSDK API 方法
+  updateAppMessageShareData?: (config: Record<string, unknown>) => void
+  updateTimelineShareData?: (config: Record<string, unknown>) => void
+  chooseImage?: (config: Record<string, unknown>) => void
+
+  // 其他可能的 API 方法，使用索引签名但限制为函数类型
+  [key: string]: ((config?: Record<string, unknown>) => void) | unknown
 }
 
 /**
@@ -98,8 +121,9 @@ export interface WXInstance {
  * ```
  */
 export const getSearchParam = (param: string): string | null => {
-  if (typeof window === 'undefined') return null
-  const searchParams = new URLSearchParams((window as Window).location.search)
+  // 使用 globalThis 代替 window，兼容 Deno 环境
+  if (typeof globalThis.location === 'undefined') return null
+  const searchParams = new URLSearchParams(globalThis.location.search)
   return searchParams.get(param)
 }
 
@@ -213,9 +237,9 @@ interface WXResponseData {
 
   /**
    * 其他可能的字段
+   * 使用更精确的类型代替 any
    */
-  // deno-lint-ignore no-explicit-any
-  [key: string]: any
+  [key: string]: string | number | boolean | string[] | Record<string, unknown>
 }
 
 /**
@@ -323,13 +347,28 @@ export const useWXSDK = ({
 
   const code = getSearchParam('code')
 
+  /**
+   * 声明全局 window 接口，用于微信 SDK
+   */
+  interface WindowWithWX extends Window {
+    wx?: WXInstance
+  }
+
   // 加载微信 JSSDK
   const loadSDK = useCallback((): Promise<void> => {
-    if ((window as unknown as { wx?: WXInstance }).wx) {
+    // 使用类型断言将 globalThis 转换为包含 wx 属性的窗口对象
+    const win = globalThis as unknown as WindowWithWX
+
+    if (win.wx) {
       return Promise.resolve()
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
+      if (typeof document === 'undefined') {
+        reject(new Error('Document is not available in this environment'))
+        return
+      }
+
       const script = document.createElement('script')
       script.src = 'https://res.wx.qq.com/open/js/jweixin-1.6.0.js'
       script.onload = () => resolve()
@@ -341,16 +380,22 @@ export const useWXSDK = ({
   // 获取签名配置
   const getSignature = async (): Promise<WXResponseData | null> => {
     try {
+      // 确保在浏览器环境中运行
+      if (typeof globalThis.location === 'undefined') {
+        throw new Error('Location is not available in this environment')
+      }
+
       const response = await fetch(getSignatureUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          url: location.href.split('#')[0],
+          url: globalThis.location.href.split('#')[0],
           jsApiList
         })
       })
+
       const data = await response.json()
       return typeof data === 'string' ? JSON.parse(data) : data
     } catch (err) {
@@ -372,7 +417,13 @@ export const useWXSDK = ({
         throw new Error('Failed to get signature data')
       }
 
-      ;(window as unknown as { wx: WXInstance }).wx.config({
+      const win = globalThis as unknown as WindowWithWX
+
+      if (!win.wx) {
+        throw new Error('WeChat JSSDK not loaded')
+      }
+
+      win.wx.config({
         debug,
         appId,
         timestamp: signatureData.timestamp,
@@ -380,13 +431,14 @@ export const useWXSDK = ({
         signature: signatureData.signature,
         jsApiList: signatureData.jsApiList
       })
-      ;(window as unknown as { wx: WXInstance }).wx.ready(() => {
+
+      win.wx.ready(() => {
         setIsReady(true)
         onReady?.()
         setError(null)
       })
-      // deno-lint-ignore no-explicit-any
-      ;(window as unknown as { wx: WXInstance }).wx.error((res: any) => {
+
+      win.wx.error((res: WXErrorResponse) => {
         setError(new Error(res.errMsg))
       })
     } catch (err) {
@@ -398,29 +450,48 @@ export const useWXSDK = ({
     }
   }
 
+  /**
+   * 微信认证响应接口
+   */
+  interface WXAuthResponse {
+    code: number
+    token?: string
+    message?: string
+    [key: string]: unknown
+  }
+
   // 登录方法
   const login = async (): Promise<string | null> => {
     try {
+      // 确保在浏览器环境中运行
+      if (typeof globalThis.location === 'undefined') {
+        throw new Error('Location is not available in this environment')
+      }
+
       if (!code) {
-        const redirect_uri = encodeURIComponent(location.href)
+        const redirect_uri = encodeURIComponent(globalThis.location.href)
         const authPageUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appId}&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_userinfo&state=#wechat_redirect`
-        location.href = authPageUrl
+        globalThis.location.href = authPageUrl
         return null
       }
 
       const response = await fetch(`${authUrl}?code=${code}`)
-      const data = await response.json()
+      const data = (await response.json()) as WXAuthResponse
 
       if (data.code === 0 && data.token) {
-        localStorage.setItem(tokenKey, data.token)
+        if (typeof localStorage !== 'undefined') {
+          localStorage.setItem(tokenKey, data.token)
+        }
         setToken(data.token)
         setIsLoggedIn(true)
 
         // 清除URL中的code参数
-        const newUrl = new URL(location.href)
+        const newUrl = new URL(globalThis.location.href)
         newUrl.searchParams.delete('code')
         newUrl.searchParams.delete('state')
-        history.replaceState({}, '', newUrl)
+        if (typeof history !== 'undefined') {
+          history.replaceState({}, '', newUrl)
+        }
 
         return data.token
       }
@@ -434,7 +505,9 @@ export const useWXSDK = ({
 
   // 登出方法
   const logout = (): void => {
-    localStorage.removeItem(tokenKey)
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(tokenKey)
+    }
     setToken(null)
     setIsLoggedIn(false)
   }
@@ -442,15 +515,19 @@ export const useWXSDK = ({
   // 初始化效果
   useEffect(() => {
     // 检查本地存储的token
-    const storedToken = localStorage.getItem(tokenKey)
-    if (storedToken) {
-      setToken(storedToken)
-      setIsLoggedIn(true)
+    if (typeof localStorage !== 'undefined') {
+      const storedToken = localStorage.getItem(tokenKey)
+      if (storedToken) {
+        setToken(storedToken)
+        setIsLoggedIn(true)
+      }
     }
 
     // 自动初始化
     if (autoInit) {
-      init()
+      init().catch((error) => {
+        console.error('Failed to initialize WeChat JSSDK:', error)
+      })
     }
   }, [])
 

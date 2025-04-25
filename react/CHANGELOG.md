@@ -9,6 +9,29 @@
 - **🔧 维护**：代码维护和优化
 
 <details open>
+<summary><strong>0.1.5</strong></summary>
+
+## ✨ 新功能
+
+### ✨ 新增资源预加载 hook
+- 新增 `useResourceLoader` hook，用于预加载大量资源（如图片、音频、视频等）
+- 支持并行加载多个资源以提高加载速度
+- 提供加载进度监控（0% 到 100%）和加载完成回调
+- 支持自定义配置，如并发数、超时时间、重试次数等
+- 支持多种资源类型，包括图片、音频、视频、JSON 和文本
+- 提供完整的状态管理，包括加载进度、加载状态、错误处理等
+- 导出了新的类型和接口：`Resource`、`ResourceType`、`ResourceError` 等
+- 添加了详细的 JSDoc 文档和使用示例
+
+## 📝 文档
+
+### 📝 文档更新
+- 更新 README.md，添加了 `useResourceLoader` hook 的使用示例
+- 为 `useResourceLoader` hook 添加了详细的 JSDoc 文档
+- 完善了类型定义的文档注释
+</details>
+
+<details>
 <summary><strong>0.1.4</strong></summary>
 
 ## ✨ 新功能

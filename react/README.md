@@ -7,6 +7,7 @@ React utility hooks and components for enterprise applications
 - **移动端适配**：提供 rem 单位转换，自动计算缩放比例
 - **设备检测**：检测设备类型和屏幕尺寸，支持响应式布局
 - **安全区域处理**：自动设置安全区域相关的 CSS 变量
+- **资源预加载**：支持并行加载大量资源（图片等），提供加载进度监控
 - **高度可配置**：所有 hooks 都支持自定义配置，使其更加灵活
 
 ## 主要模块
@@ -16,6 +17,7 @@ React utility hooks and components for enterprise applications
   - `useSafeArea`：安全区域处理 hook
   - `useDevice`：设备检测 hook
   - `useWXSDK`：微信 JSSDK 集成 hook
+  - `useResourceLoader`：资源预加载 hook
 
 ## API 文档
 
@@ -106,6 +108,45 @@ function WeChatApp() {
       {!isReady && <button onClick={init}>初始化 JSSDK</button>}
       {isReady && !isLoggedIn && <button onClick={login}>微信登录</button>}
       {isLoggedIn && <button onClick={logout}>退出登录</button>}
+    </div>
+  );
+}
+```
+
+### useResourceLoader
+
+```tsx
+import { useResourceLoader } from '@aiho/react/hooks';
+
+function LoadingScreen() {
+  const {
+    progress,
+    isLoading,
+    isComplete,
+    errors
+  } = useResourceLoader({
+    resources: [
+      { type: 'image', url: '/images/background.jpg' },
+      { type: 'image', url: '/images/logo.png' },
+      { type: 'image', url: '/images/icon1.svg' },
+      { type: 'image', url: '/images/icon2.svg' }
+    ],
+    onLoaded: () => {
+      console.log('所有资源加载完成');
+    }
+  });
+
+  return (
+    <div className="loading-screen">
+      <div className="progress-bar">
+        <div
+          className="progress-fill"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+      <div className="progress-text">
+        {isComplete ? '加载完成' : `加载中... ${Math.floor(progress)}%`}
+      </div>
     </div>
   );
 }

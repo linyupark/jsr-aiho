@@ -1,6 +1,6 @@
 {
   "name": "@aiho/react",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "React utility hooks and components for enterprise applications",
   "exports": {
     "./hooks": "./src/hooks/mod.ts"
@@ -32,7 +32,9 @@
     "mobile",
     "responsive",
     "rem",
-    "safe-area"
+    "safe-area",
+    "resource-loader",
+    "preload"
   ],
   "license": "MIT"
 }

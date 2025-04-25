@@ -4,11 +4,18 @@
  *
  * @example 使用默认配置
  * ```
- * import { useRem, useSafeArea, useDevice } from "@aiho/react/hooks";
+ * import { useRem, useSafeArea, useDevice, useResourceLoader } from "@aiho/react/hooks";
  *
  * function App() {
  *   const { px2rem } = useRem();
  *   const safeArea = useSafeArea();
+ *   const { progress, isComplete } = useResourceLoader({
+ *     resources: [
+ *       { type: 'image', url: '/images/background.jpg' },
+ *       { type: 'image', url: '/images/logo.png' }
+ *     ],
+ *     onLoaded: () => console.log('资源加载完成')
+ *   });
  *
  *   return (
  *     <div style={{
@@ -17,7 +24,7 @@
  *       fontSize: px2rem(16),
  *       paddingBottom: `${safeArea.bottom}px`
  *     }}>
- *       内容将根据屏幕大小自适应缩放，但保持可读性
+ *       {!isComplete ? `加载中... ${Math.floor(progress)}%` : '内容将根据屏幕大小自适应缩放，但保持可读性'}
  *     </div>
  *   );
  * }
@@ -80,3 +87,12 @@ export type { DeviceType, UseDeviceOptions } from './use-device.ts'
 
 export { useWXSDK, getSearchParam } from './use-wxsdk.ts'
 export type { WXSDKConfig, WXSDKResponse, WXInstance } from './use-wxsdk.ts'
+
+export { useResourceLoader } from './use-resource-loader.ts'
+export type {
+  Resource,
+  ResourceType,
+  ResourceError,
+  UseResourceLoaderOptions,
+  ResourceLoaderState
+} from './use-resource-loader.ts'
