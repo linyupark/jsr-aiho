@@ -9,6 +9,17 @@
 - **🔧 维护**：代码维护和优化
 
 <details open>
+<summary><strong>0.1.9</strong></summary>
+
+## ✨ 新功能
+
+### ✨ 新增防抖 hook
+- 新增 `useDebounce` hook，用于延迟执行函数，避免频繁触发
+- 新增 `useDebounceCallback` hook，用于延迟执行回调函数
+- 添加了详细的 JSDoc 文档和使用示例
+</details>
+
+<details>
 <summary><strong>0.1.8</strong></summary>
 
 ## 🔥 增强

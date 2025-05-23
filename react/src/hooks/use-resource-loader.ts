@@ -577,12 +577,15 @@ export function useResourceLoader(
           retryDelay
         )
 
-        // 更新已加载资源
-        setLoadedResources((prev: Record<string, LoadedResource>) => ({
-          ...prev,
-          [id]: loadedResource,
-          [url]: loadedResource
-        }))
+        // 更新已加载资源，使用函数式更新确保使用最新状态
+        setLoadedResources((prev: Record<string, LoadedResource>) => {
+          const updated = {
+            ...prev,
+            [id]: loadedResource,
+            [url]: loadedResource
+          }
+          return updated
+        })
 
         // 更新加载计数
         setLoadedCount((prev: number) => prev + 1)
@@ -618,22 +621,21 @@ export function useResourceLoader(
         if (allProcessed) {
           setIsLoading(false)
           setIsComplete(true)
-          onLoaded?.(loadedResources)
+          // 使用函数形式获取最新的loadedResources状态
+          setLoadedResources(
+            (currentLoadedResources: Record<string, LoadedResource>) => {
+              // 在状态更新完成后调用onLoaded回调
+              setTimeout(() => onLoaded?.(currentLoadedResources), 0)
+              return currentLoadedResources
+            }
+          )
         } else {
           // 继续处理队列中的下一个资源
           processNextResource()
         }
       }
     },
-    [
-      timeout,
-      retryCount,
-      retryDelay,
-      totalWeight,
-      onProgress,
-      onError,
-      onLoaded
-    ]
+    [timeout, retryCount, retryDelay, totalWeight, onProgress, onError]
   )
 
   // 处理队列中的下一个资源
@@ -675,6 +677,7 @@ export function useResourceLoader(
   const resetAndReload = useCallback(() => {
     resetState()
     // 使用 setTimeout 确保状态重置后再开始加载
+    // 增加延迟时间，确保状态完全更新
     setTimeout(() => {
       setIsLoading(true)
 
@@ -683,20 +686,27 @@ export function useResourceLoader(
       for (let i = 0; i < initialBatch; i++) {
         processNextResource()
       }
-    }, 0)
+    }, 50) // 增加延迟时间
   }, [resetState, concurrency, resources.length, processNextResource])
+
+  // 使用ref跟踪是否已经初始化，避免重复执行
+  const isInitialMount = useRef(true)
 
   // 自动开始加载
   useEffect(() => {
-    if (autoStart) {
+    if (isInitialMount.current && autoStart) {
+      isInitialMount.current = false
       resetState()
-      startLoading()
+      // 使用setTimeout确保状态更新后再开始加载
+      setTimeout(() => {
+        startLoading()
+      }, 0)
     }
 
     return () => {
       // 清理工作（如果需要）
     }
-  }, [autoStart, resetState, startLoading])
+  }, [])
 
   return {
     progress,

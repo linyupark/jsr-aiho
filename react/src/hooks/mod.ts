@@ -72,6 +72,8 @@
  * @module
  */
 
+export { useDebounce } from './use-debounce.ts'
+
 export { useRem, px2rem, rem2px } from './use-rem.ts'
 export type { UseRemOptions } from './use-rem.ts'
 

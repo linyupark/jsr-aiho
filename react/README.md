@@ -22,12 +22,61 @@ React utility hooks and components for enterprise applications
   - `useResourceLoader`：资源预加载 hook
   - `useSwrEnhanced`：增强版 SWR 数据请求 hook
   - `useFetchEnhanced`：增强版 fetch hook，支持中断请求、超时设置等
+  - `useDebounce`：防抖 hook
+  - `useDebounceCallback`：防抖函数 hook
 
 ## API 文档
 
 每个模块都提供了详细的 JSDoc 文档注释，可以在编辑器中查看。
 
 ## 使用示例
+
+### useDebounce
+
+```tsx
+import { useDebounce } from '@aiho/react/hooks';
+
+function SearchInput() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  useEffect(() => {
+    if (debouncedSearchTerm) {
+      // 执行搜索操作
+    }
+  }, [debouncedSearchTerm]);
+
+  return (
+    <input
+      type="text"
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      placeholder="Search..."
+    />
+  );
+}
+```
+
+### useDebounceCallback
+
+```tsx
+import { useDebounceCallback } from '@aiho/react/hooks';
+
+function SearchInput() {
+  const handleSearch = useDebounceCallback((value: string) => {
+    // 执行搜索操作
+    console.log('搜索:', value);
+  }, 500);
+
+  return (
+    <input
+      type="text"
+      onChange={(e) => handleSearch(e.target.value)}
+      placeholder="Search..."
+    />
+  );
+}
+```
 
 ### useRem
 
